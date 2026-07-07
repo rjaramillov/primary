@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Actividades - Aprendizaje Activo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #2d3748;
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: #1a365d;
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid #2b6cb0;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard de Cards */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .card-tag.locked {
+            background-color: #edf2f7;
+            color: #718096;
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #3182ce;
+            color: #ffffff;
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #2b6cb0;
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e0;
+            color: #718096;
+            cursor: not-allowed;
+        }
+
+        /* Secciones de Actividad */
+        .view-section {
+            display: none;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: #1a365d;
+        }
+
+        /* Contenido de Lectura */
+        .reading-box {
+            background-color: #f7fafc;
+            border-left: 5px solid #319795;
+            padding: 25px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 35px;
+        }
+
+        .reading-box h3 {
+            color: #234e52;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .reading-box p {
+            font-size: 1.05rem;
+            color: #2d3748;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        .reading-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Cuestionario */
+        .quiz-title {
+            font-size: 1.6rem;
+            color: #1a365d;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .question-block {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            margin-bottom: 8px;
+        }
+
+        .option-item label {
+            display: block;
+            background: #f8fafc;
+            padding: 12px 15px;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option-item label:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.1);
+        }
+
+        /* Estilos de Calificación */
+        .correct-answer {
+            background-color: #c6f6d5 !important;
+            border-color: #38a169 !important;
+            color: #22543d;
+            font-weight: 600;
+        }
+
+        .wrong-answer {
+            background-color: #fed7d7 !important;
+            border-color: #e53e3e !important;
+            color: #742a2a;
+        }
+
+        /* Resultados */
+        .results-box {
+            display: none;
+            background: #ebf8ff;
+            border: 2px solid #3182ce;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-box h4 {
+            font-size: 1.8rem;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .results-box p {
+            font-size: 1.2rem;
+            color: #2d3748;
+        }
+
+        @media (max-width: 600px) {
+            .view-section {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Portal del Aprendizaje</h1>
+        <p>Actividades interactivas de retención y comprensión lectora</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard-view" class="view-section active" style="background: transparent; border: none; padding: 0; box-shadow: none;">
+            <h2 style="margin-bottom: 20px; color: #1a365d;">Mis Actividades</h2>
+            <div class="grid-cards">
+                
+                <!-- Card 1 (Active) -->
+                <div class="card">
+                    <div>
+                        <span class="card-tag">Disponible</span>
+                        <h2>Comprensión Lectora</h2>
+                        <p>Desafío de 20 preguntas basadas en dos lecturas críticas de nivel elemental avanzado. Diseñado para entrenar la memoria, la inferencia lógica y la retención de datos clave.</p>
+                    </div>
+                    <button class="btn" onclick="switchView('activity-1')">Iniciar Desafío</button>
+                </div>
+
+                <!-- Card 2 (Locked) -->
+                <div class="card" style="opacity: 0.7;">
+                    <div>
+                        <span class="card-tag locked">Próximamente</span>
+                        <h2>Lógica y Matemáticas</h2>
+                        <p>Problemas razonados, retos numéricos y desafíos visuales estructurados para fortalecer el pensamiento lógico-matemático.</p>
+                    </div>
+                    <button class="btn" disabled>Bloqueado</button>
+                </div>
+
+                <!-- Card 3 (Locked) -->
+                <div class="card" style="opacity: 0.7;">
+                    <div>
+                        <span class="card-tag locked">Próximamente</span>
+                        <h2>Ciencia e Historia</h2>
+                        <p>Lecturas de inmersión sobre eventos históricos de México y fenómenos del mundo natural con mapas conceptuales interactivos.</p>
+                    </div>
+                    <button class="btn" disabled>Bloqueado</button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ACTIVITY 1 VIEW -->
+        <div id="activity-1" class="view-section">
+            <div class="back-link" onclick="switchView('dashboard-view')">← Volver al Menú Principal</div>
+            
+            <div id="results-summary" class="results-box">
+                <h4>¡Actividad Evaluada!</h4>
+                <p id="score-text">Obtuviste 0 de 20 puntos.</p>
+            </div>
+
+            <h2 class="quiz-title">Actividad 1: Lecturas Avanzadas de Comprensión</h2>
+
+            <!-- LECTURA 1 -->
+            <div class="reading-box">
+                <h3>Lectura 1: El Secreto de los Chultunes Mayas</h3>
+                <p>La civilización maya floreció en la península de Yucatán y otras regiones de Centroamérica durante el período Clásico (entre los siglos III y IX d.C.). Sin embargo, la península de Yucatán tiene una característica peculiar: casi no hay ríos superficiales debido a que el suelo es de piedra caliza, la cual absorbe el agua como una esponja y la lleva al subsuelo, creando los llamados cenotes. Durante la época de sequía, que duraba varios meses, conseguir agua dulce para la agricultura y el consumo humano era un gran desafío.</p>
+                <p>Para resolver este gran problema, los mayas de ciudades como Uxmal y Tikal desarrollaron un ingenioso sistema de ingeniería: los chultunes. Un chultún es una cisterna subterránea excavada directamente en la roca caliza dura. Tenían una ingeniosa forma de botella, con un cuello muy estrecho en la superficie (que se podía tapar con una gran losa de piedra para evitar que entrara suciedad, hojas secas o animales) y una cámara sumamente amplia en el fondo. El interior se recubría por completo con un yeso especial hecho de cal, llamado estuco, que servía para impermeabilizar las paredes y evitar que el agua se filtrara por los poros de la roca.</p>
+                <p>Alrededor de la entrada del chultún, los mayas construían grandes plataformas inclinadas de piedra pulida que funcionaban como embudos gigantes. Cuando llegaban las lluvias de la temporada, el agua corría rápidamente por estas plataformas inclinadas directo hacia el cuello de la cisterna. Algunos chultunes eran tan enormes que podían almacenar hasta 30,000 litros de agua, lo suficiente para abastecer a varias familias enteras durante toda la temporada seca. Gracias a esta grandiosa tecnología, los mayas pudieron edificar imponentes ciudades lejos de los cenotes naturales y sobrevivir exitosamente en un entorno difícil.</p>
+            </div>
+
+            <!-- PREGUNTAS LECTURA 1 -->
+            <div id="quiz-container-1">
+                <!-- Q1 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">1. ¿En qué período floreció la civilización maya según el texto?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q1" value="A"> A) Período Preclásico (siglo I d.C.)</label></li>
+                        <li class="option-item"><label><input type="radio" name="q1" value="B"> B) Período Clásico (siglos III al IX d.C.)</label></li>
+                        <li class="option-item"><label><input type="radio" name="q1" value="C"> C) Período Posclásico (siglo XII d.C.)</label></li>
+                        <li class="option-item"><label><input type="radio" name="q1" value="D"> D) Períero Moderno (siglo XX d.C.)</label></li>
+                    </ul>
+                </div>
+                <!-- Q2 -->
+                <div class="question-block" data-correct="C">
+                    <p class="question-text">2. ¿Por qué casi no hay ríos superficiales en la península de Yucatán?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q2" value="A"> A) Porque nunca llueve en toda esa región geográfica.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q2" value="B"> B) Porque los mayas desviaron los ríos hacia estanques artificiales.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q2" value="C"> C) Porque el suelo de piedra caliza absorbe el agua hacia el subsuelo.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q2" value="D"> D) Porque las montañas impiden el paso de las corrientes de agua.</label></li>
+                    </ul>
+                </div>
+                <!-- Q3 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">3. ¿Qué es un chultún?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q3" value="A"> A) Una pirámide utilizada para observar los planetas.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q3" value="B"> B) Una cisterna subterránea excavada en la roca para almacenar agua.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q3" value="C"> C) Un tipo de cultivo flotante sobre lagos profundos.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q3" value="D"> D) Un arma de defensa utilizada contra invasores.</label></li>
+                    </ul>
+                </div>
+                <!-- Q4 -->
+                <div class="question-block" data-correct="C">
+                    <p class="question-text">4. ¿Qué peculiar forma tenían los chultunes en su estructura interna?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q4" value="A"> A) Forma de un cubo perfecto y simétrico.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q4" value="B"> B) Forma de una esfera completamente cerrada.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q4" value="C"> C) Forma de botella con cuello estrecho y fondo amplio.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q4" value="D"> D) Forma de un canal abierto que cruzaba el pueblo.</label></li>
+                    </ul>
+                </div>
+                <!-- Q5 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">5. ¿Qué material utilizaban los mayas para impermeabilizar las paredes del chultún?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q5" value="A"> A) Barro cocido mezclado con miel de abeja.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q5" value="B"> B) Un yeso especial hecho de cal llamado estuco.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q5" value="C"> C) Hojas de palma unidas fuertemente con resina.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q5" value="D"> D) Piedras lisas de río pegadas con lodo arcilloso.</label></li>
+                    </ul>
+                </div>
+                <!-- Q6 -->
+                <div class="question-block" data-correct="A">
+                    <p class="question-text">6. ¿Para qué servía la losa de piedra que colocaban en el cuello del chultún?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q6" value="A"> A) Para evitar el ingreso de suciedad, hojas o animales.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q6" value="B"> B) Para medir los meses del año mediante la sombra del sol.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q6" value="C"> C) Para triturar los granos de maíz cosechados.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q6" value="D"> D) Para adornar las entradas de las casas principales.</label></li>
+                    </ul>
+                </div>
+                <!-- Q7 -->
+                <div class="question-block" data-correct="D">
+                    <p class="question-text">7. ¿Cómo lograban los mayas recolectar de forma eficiente el agua de lluvia hacia el chultún?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q7" value="A"> A) Cargándola pacientemente en vasijas desde los cenotes.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q7" value="B"> B) Con canales cavados en la tierra que venían desde los cerros.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q7" value="C"> C) Poniendo grandes telas tejidas extendidas en los árboles.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q7" value="D"> D) Construyendo plataformas inclinadas de piedra que servían como embudos.</label></li>
+                    </ul>
+                </div>
+                <!-- Q8 -->
+                <div class="question-block" data-correct="C">
+                    <p class="question-text">8. ¿Qué capacidad máxima de almacenamiento podían alcanzar los chultunes más grandes?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q8" value="A"> A) Hasta 1,000 litros de agua dulce.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q8" value="B"> B) Hasta 12,000 litros de agua dulce.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q8" value="C"> C) Hasta 30,000 litros de agua dulce.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q8" value="D"> D) Más de 100,000 litros de agua dulce.</label></li>
+                    </ul>
+                </div>
+                <!-- Q9 -->
+                <div class="question-block" data-correct="A">
+                    <p class="question-text">9. ¿Qué ciudades mayas se mencionan explícitamente en el texto como ejemplos donde usaron chultunes?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q9" value="A"> A) Uxmal y Tikal.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q9" value="B"> B) Chichén Itzá y Tulum.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q9" value="C"> C) Palenque y Mayapán.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q9" value="D"> D) Calakmul y Bonampak.</label></li>
+                    </ul>
+                </div>
+                <!-- Q10 -->
+                <div class="question-block" data-correct="D">
+                    <p class="question-text">10. ¿Cuál es la idea central u objetivo principal de la lectura 1?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q10" value="A"> A) Explicar las razones del fin del Imperio Maya.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q10" value="B"> B) Describir las tradiciones religiosas y de juego de pelota.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q10" value="C"> C) Demostrar que los cenotes eran lugares sagrados.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q10" value="D"> D) Mostrar el ingenio tecnológico maya para solucionar la escasez de agua.</label></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- LECTURA 2 -->
+            <div class="reading-box" style="border-left-color: #3182ce; margin-top: 50px;">
+                <h3>Lectura 2: La Maratón Alada de la Mariposa Monarca</h3>
+                <p>Cada año, entre los meses de agosto y octubre, ocurre uno de los espectáculos de la naturaleza más asombrosos del planeta: la gran migración de la mariposa monarca. Millones de estos maravillosos e incansables insectos, que individualmente pesan menos de un gramo, emprenden un largo y peligroso viaje de más de 4,000 kilómetros. Se desplazan desde el sur de Canadá y el norte de Estados Unidos hasta las zonas boscosas de las montañas del centro de México, específicamente en los estados de Michoacán y el Estado de México.</p>
+                <p>¿Por qué realizan esta extenuante travesía? Las monarcas escapan del gélido invierno del norte, donde las bajísimas temperaturas y la falta absoluta de flores congeladas provocarían su muerte. En cambio, los densos bosques de un árbol llamado oyamel en México les otorgan el microclima ideal: la temperatura allí es lo bastante templada y fresca para permitirles entrar en un estado vital de hibernación (lo que les ahorra valiosa energía), pero no tan fría como para congelar sus delicados cuerpos. Además, la constante neblina y humedad ambiental de estos bosques previene que sufran deshidratación.</p>
+                <p>Lo más asombroso de este fenómeno biológico es que ninguna mariposa individual hace el viaje completo de ida y vuelta. Una mariposa monarca común vive solamente de 4 a 5 semanas. Sin embargo, la generación que nace al final del verano es completamente única: los biólogos la llaman la "generación Matusalén". Estas mariposas especiales detienen temporalmente su proceso normal de envejecimiento y logran vivir hasta 8 meses. Ellas hacen todo el viaje de ida hacia el sur, hibernan en los santuarios mexicanos durante el invierno, y en marzo del siguiente año emprenden el regreso hacia el norte. En el camino de vuelta se reproducen y mueren, permitiendo que sus hijos y nietos finalicen el trayecto total de regreso a Canadá.</p>
+                <p>Para orientarse a lo largo del continente sin perder el rumbo, poseen una sofisticada "brújula solar" integrada en sus ojos combinada con sensores en sus antenas capaces de captar el campo magnético de la Tierra.</p>
+            </div>
+
+            <!-- PREGUNTAS LECTURA 2 -->
+            <div id="quiz-container-2">
+                <!-- Q11 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">11. ¿Cuántos kilómetros recorren aproximadamente las mariposas monarca en su viaje migratorio?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q11" value="A"> A) Alrededor de 1,500 kilómetros.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q11" value="B"> B) Más de 4,000 kilómetros.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q11" value="C"> C) Exactamente 800 kilómetros.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q11" value="D"> D) Más de 10,000 kilómetros.</label></li>
+                    </ul>
+                </div>
+                <!-- Q12 -->
+                <div class="question-block" data-correct="D">
+                    <p class="question-text">12. ¿De qué países del norte del continente americano parten estas mariposas?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q12" value="A"> A) De Groenlandia e Islandia.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q12" value="B"> B) De Alaska y el norte de México.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q12" value="C"> C) De Canadá y el norte de Europa.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q12" value="D"> D) Del sur de Canadá y el norte de Estados Unidos.</label></li>
+                    </ul>
+                </div>
+                <!-- Q13 -->
+                <div class="question-block" data-correct="A">
+                    <p class="question-text">13. ¿A qué estados de la República Mexicana llegan a establecer sus santuarios?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q13" value="A"> A) Michoacán y Estado de México.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q13" value="B"> B) Colima y Jalisco.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q13" value="C"> C) Veracruz y Puebla.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q13" value="D"> D) Zacatecas y San Luis Potosí.</label></li>
+                    </ul>
+                </div>
+                <!-- Q14 -->
+                <div class="question-block" data-correct="C">
+                    <p class="question-text">14. ¿Cómo se llama la especie de árbol que compone los bosques donde se refugian en México?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q14" value="A"> A) Pino piñonero.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q14" value="B"> B) Encino blanco.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q14" value="C"> C) Oyamel.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q14" value="D"> D) Ceiba ancestral.</label></li>
+                    </ul>
+                </div>
+                <!-- Q15 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">15. ¿Por qué el bosque de oyamel es el refugio ideal para la hibernación?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q15" value="A"> A) Porque hay abundantes depredadores que las protegen.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q15" value="B"> B) Porque mantiene una temperatura fresca que evita que se congelen y conserva humedad.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q15" value="C"> C) Porque es un lugar seco y muy caluroso todo el año.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q15" value="D"> D) Porque las ramas son tan duras que soportan tormentas de nieve.</label></li>
+                    </ul>
+                </div>
+                <!-- Q16 -->
+                <div class="question-block" data-correct="A">
+                    <p class="question-text">16. ¿Cuánto tiempo vive habitualmente una mariposa monarca común?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q16" value="A"> A) De 4 a 5 semanas.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q16" value="B"> B) Solamente 3 días.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q16" value="C"> C) Un año completo.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q16" value="D"> D) Cerca de 6 meses.</label></li>
+                    </ul>
+                </div>
+                <!-- Q17 -->
+                <div class="question-block" data-correct="C">
+                    <p class="question-text">17. ¿Qué nombre especial recibe la generación que migra hacia el sur?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q17" value="A"> A) Generación Monarca Dorada.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q17" value="B"> B) Generación Viajera de Otoño.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q17" value="C"> C) Generación Matusalén.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q17" value="D"> D) Generación Invernal Extendida.</label></li>
+                    </ul>
+                </div>
+                <!-- Q18 -->
+                <div class="question-block" data-correct="D">
+                    <p class="question-text">18. ¿Aproximadamente cuánto tiempo logra vivir la generación especial migratoria?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q18" value="A"> A) Hasta 2 semanas.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q18" value="B"> B) Alrededor de 3 meses.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q18" value="C"> C) Exactamente 5 meses.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q18" value="D"> D) Hasta 8 meses.</label></li>
+                    </ul>
+                </div>
+                <!-- Q19 -->
+                <div class="question-block" data-correct="A">
+                    <p class="question-text">19. ¿Quiénes completan el viaje de regreso hacia el norte (Canadá) en primavera?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q19" value="A"> A) Los hijos y nietos de la generación Matusalén.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q19" value="B"> B) Las mismas mariposas viejas que llegaron en otoño.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q19" value="C"> C) Enjambres de libélulas que las acompañan.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q19" value="D"> D) Mariposas monarca jóvenes que nunca viajaron al sur.</label></li>
+                    </ul>
+                </div>
+                <!-- Q20 -->
+                <div class="question-block" data-correct="B">
+                    <p class="question-text">20. ¿Qué sofisticados sistemas biológicos utilizan para orientarse en su vuelo de miles de kilómetros?</p>
+                    <ul class="options-list">
+                        <li class="option-item"><label><input type="radio" name="q20" value="A"> A) El mapa de las estrellas y el flujo de los ríos.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q20" value="B"> B) Una brújula solar interna y sensores magnéticos en sus antenas.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q20" value="C"> C) La dirección constante de los vientos alisios del Golfo.</label></li>
+                        <li class="option-item"><label><input type="radio" name="q20" value="D"> D) El rastro de olor que dejan otros insectos migratorios.</label></li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="btn" style="background-color: #2b6cb0; margin-top: 20px;" onclick="evaluateQuiz()">Evaluar mis respuestas</button>
+        </div>
+
+    </div>
+
+    <script>
+        function switchView(viewId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Mostrar la sección seleccionada
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function evaluateQuiz() {
+            let score = 0;
+            const totalQuestions = 20;
+            const questionBlocks = document.querySelectorAll('.question-block');
+
+            questionBlocks.forEach((block, index) => {
+                const correctAnswer = block.getAttribute('data-correct');
+                const questionNum = index + 1;
+                const selectedRadio = block.querySelector(`input[name="q${questionNum}"]:checked`);
+                
+                // Limpiar estilos previos si los hubiera
+                block.querySelectorAll('.option-item label').forEach(label => {
+                    label.classList.remove('correct-answer', 'wrong-answer');
+                });
+
+                if (selectedRadio) {
+                    const userAnswer = selectedRadio.value;
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        selectedRadio.parentElement.classList.add('correct-answer');
+                    } else {
+                        selectedRadio.parentElement.classList.add('wrong-answer');
+                        // Mostrar también cuál era la correcta
+                        block.querySelectorAll('.option-item label').forEach(label => {
+                            if (label.querySelector('input').value === correctAnswer) {
+                                label.classList.add('correct-answer');
+                            }
+                        });
+                    }
+                } else {
+                    // Si no contestó, marcar la respuesta correcta de todos modos
+                    block.querySelectorAll('.option-item label').forEach(label => {
+                        if (label.querySelector('input').value === correctAnswer) {
+                            label.classList.add('correct-answer');
+                        }
+                    });
+                }
+            });
+
+            // Mostrar el cuadro de resultados arriba
+            const resultsBox = document.getElementById('results-summary');
+            const scoreText = document.getElementById('score-text');
+            resultsBox.style.display = 'block';
+            
+            let message = "";
+            if(score === totalQuestions) {
+                message = " ¡Perfecto! Demostraste una retención y comprensión lectora impecable.";
+            } else if (score >= 15) {
+                message = " ¡Excelente trabajo! Tienes muy buena memoria y capacidad de análisis.";
+            } else if (score >= 10) {
+                message = " ¡Buen intento! Puedes volver a leer los textos con calma para encontrar los detalles que te faltaron.";
+            } else {
+                message = " Sigue practicando. Leer despacio y subrayar los datos importantes te ayudará mucho.";
+            }
+
+            scoreText.innerHTML = "Obtuviste <strong>" + score + "</strong> de <strong>" + totalQuestions + "</strong> puntos." + message;
+            
+            // Desplazar suavemente hacia arriba para ver el puntaje
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
