@@ -172,10 +172,11 @@
         }
 
         .btn:disabled {
-            border-color: #30363d;
-            color: #484f58;
+            border-color: #30363d !important;
+            color: #484f58 !important;
             cursor: not-allowed;
-            background: #161b22;
+            background: #161b22 !important;
+            box-shadow: none !important;
         }
 
         /* VISTAS */
@@ -268,6 +269,11 @@
             border-radius: 10px;
             border: 1px solid #30363d;
             margin-bottom: 25px;
+            transition: border-color 0.3s;
+        }
+        
+        .question-block.answered {
+            border-left: 4px solid var(--primary-neon);
         }
 
         .question-text {
@@ -384,6 +390,25 @@
             width: 0%;
             transition: width 1.5s ease-out;
             box-shadow: 0 0 10px #00ffcc;
+        }
+
+        /* Sticky Footer Tracker */
+        .progress-tracker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(22, 27, 34, 0.95);
+            border-top: 2px solid var(--primary-neon);
+            padding: 15px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.1);
+        }
+
+        .progress-tracker.active {
+            display: block;
         }
 
     </style>
@@ -655,24 +680,86 @@
                 </div>
             </div>
 
-            <button class="btn" style="width: 100%; font-size: 1.5rem; padding: 20px; margin-top: 20px; box-shadow: 0 0 15px var(--primary-neon);" onclick="evaluateQuiz()">▶ VALIDAR DATOS Y TERMINAR NIVEL ◀</button>
+            <!-- Botón de Evaluación (Bloqueado por defecto) -->
+            <button id="submit-btn" class="btn" style="width: 100%; font-size: 1.5rem; padding: 20px; margin-top: 20px;" onclick="evaluateQuiz()" disabled>
+                🔒 SISTEMA BLOQUEADO (FALTAN 20 RESPUESTAS)
+            </button>
+            
+        </div>
+        
+        <!-- Tracker flotante en la parte inferior para que sepa cuántas le faltan mientras lee -->
+        <div id="progress-tracker" class="progress-tracker">
+            <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary-neon);">PROGRESO DE LA MISIÓN: <span id="answered-count">0</span>/20 DATOS RECOPILADOS</span>
         </div>
 
     </div>
 
     <script>
+        // Lógica de Validación Constante
+        document.addEventListener('DOMContentLoaded', () => {
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', checkCompletion);
+            });
+            checkCompletion(); // Estado inicial al cargar
+        });
+
+        function checkCompletion() {
+            const totalQuestions = 20;
+            let answered = 0;
+            
+            // Contar cuántas preguntas han sido respondidas
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (document.querySelector(`input[name="q${i}"]:checked`)) {
+                    answered++;
+                    // Opcional: Marcar visualmente el bloque de la pregunta como "listo"
+                    document.querySelector(`input[name="q${i}"]:checked`).closest('.question-block').classList.add('answered');
+                }
+            }
+            
+            // Actualizar el botón de envío
+            const btn = document.getElementById('submit-btn');
+            const trackerText = document.getElementById('answered-count');
+            
+            trackerText.textContent = answered;
+
+            if(answered === totalQuestions) {
+                btn.disabled = false;
+                btn.innerHTML = "▶ VALIDAR DATOS Y TERMINAR NIVEL ◀";
+                btn.style.boxShadow = "0 0 15px var(--primary-neon)";
+                btn.style.borderColor = "var(--primary-neon)";
+                btn.style.color = "var(--primary-neon)";
+                document.getElementById('progress-tracker').classList.remove('active'); // Ocultar tracker flotante si ya terminó
+            } else {
+                btn.disabled = true;
+                btn.innerHTML = `🔒 SISTEMA BLOQUEADO (FALTAN ${totalQuestions - answered} RESPUESTAS)`;
+            }
+        }
+
+        // Lógica de Vistas
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(viewId).classList.add('active');
             window.scrollTo(0, 0);
+            
+            // Mostrar tracker flotante si entra a la actividad
+            if(viewId === 'activity-1' && document.getElementById('submit-btn').disabled) {
+                document.getElementById('progress-tracker').classList.add('active');
+            } else {
+                document.getElementById('progress-tracker').classList.remove('active');
+            }
         }
 
+        // Lógica de Calificación
         function evaluateQuiz() {
             let score = 0;
             const totalQuestions = 20;
             const questionBlocks = document.querySelectorAll('.question-block');
+
+            // Ocultar botón de validar para que no lo presione de nuevo
+            document.getElementById('submit-btn').style.display = 'none';
 
             questionBlocks.forEach((block, index) => {
                 const correctAnswer = block.getAttribute('data-correct');
@@ -696,12 +783,6 @@
                             }
                         });
                     }
-                } else {
-                    block.querySelectorAll('.option-item label').forEach(label => {
-                        if (label.querySelector('input').value === correctAnswer) {
-                            label.classList.add('correct-answer');
-                        }
-                    });
                 }
             });
 
