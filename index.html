@@ -1,832 +1,688 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misiones de Aprendizaje</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@500;600;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Desafío Verano: 5° a 6°</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+    --bg: #FFF8F0;
+    --fg: #2D3436;
+    --muted: #7F8C8D;
+    --accent: #FF6B35;
+    --accent2: #00B4A6;
+    --accent3: #E84393;
+    --card: #FFFFFF;
+    --border: #EDE6DD;
+    --success: #00C853;
+    --error: #FF3D00;
+    --l1: #FF6B35;
+    --l2: #00B4A6;
+    --l3: #E84393;
+    --star: #FFD166;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;overflow-x:hidden;position:relative}
+.bg-shapes{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.bg-shape{position:absolute;border-radius:50%;opacity:0.07;animation:bfloat 18s ease-in-out infinite}
+.bg-shape:nth-child(1){width:300px;height:300px;background:var(--l1);top:-80px;left:-60px}
+.bg-shape:nth-child(2){width:250px;height:250px;background:var(--l2);bottom:-50px;right:-40px;animation-delay:-6s}
+.bg-shape:nth-child(3){width:200px;height:200px;background:var(--l3);top:40%;left:60%;animation-delay:-12s}
+@keyframes bfloat{0%,100%{transform:translateY(0) scale(1)}33%{transform:translateY(-25px) scale(1.05)}66%{transform:translateY(15px) scale(0.95)}}
+#app{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:16px;min-height:100vh}
+#confetti-canvas{position:fixed;inset:0;z-index:1000;pointer-events:none;display:none}
+h1{font-size:2rem;font-weight:900;line-height:1.15}
+h2{font-size:1.5rem;font-weight:800;line-height:1.2}
+h3{font-size:1.15rem;font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:14px;border:none;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;position:relative;overflow:hidden}
+.btn:active{transform:scale(0.96)}
+.btn-back{background:var(--card);color:var(--fg);border:2px solid var(--border);padding:8px 16px;font-size:.9rem;border-radius:12px}
+.btn-back:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(255,107,53,.3)}
+.btn-teal{background:var(--accent2);color:#fff}
+.btn-teal:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(0,180,166,.3)}
+.btn-pink{background:var(--accent3);color:#fff}
+.btn-pink:hover{filter:brightness(1.1);box-shadow:0 4px 16px rgba(232,67,147,.3)}
+.card{background:var(--card);border-radius:20px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:2px solid var(--border);transition:all .25s}
+.card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1)}
+.card-l1:hover{border-color:var(--l1)}
+.card-l2:hover{border-color:var(--l2)}
+.card-l3:hover{border-color:var(--l3)}
+.stars{display:flex;gap:4px}
+.star{color:#DDD;font-size:1.2rem;transition:color .3s,transform .3s}
+.star.earned{color:var(--star);transform:scale(1.1)}
+.star.big{font-size:2.5rem}
+.menu-header{text-align:center;padding:24px 0 8px}
+.menu-header h1{color:var(--accent)}
+.menu-header p{color:var(--muted);font-weight:600;margin-top:4px}
+.total-stars{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#FFF3E0,#FFF8F0);border:2px solid var(--star);border-radius:50px;padding:8px 20px;margin:16px 0 24px;font-weight:800;font-size:1.1rem;color:#E67E22}
+.level-card{cursor:pointer;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.level-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0}
+.level-info{flex:1}
+.level-info h2{margin-bottom:2px}
+.level-info p{color:var(--muted);font-size:.9rem}
+.level-stars{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--muted);font-size:.9rem}
+.level-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.level-title{flex:1}
+.act-card{cursor:pointer;margin-bottom:12px;display:flex;align-items:center;gap:16px;padding:18px 20px}
+.act-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;flex-shrink:0}
+.act-info{flex:1}
+.act-info h3{margin-bottom:2px}
+.act-info p{color:var(--muted);font-size:.85rem}
+.activity-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.activity-title{flex:1;min-width:150px}
+.progress-bar{width:100%;height:8px;background:var(--border);border-radius:4px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.hint{text-align:center;color:var(--muted);font-size:.9rem;font-weight:600;margin-bottom:16px;padding:10px;background:rgba(0,0,0,.03);border-radius:12px}
+.match-container{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.match-col{display:flex;flex-direction:column;gap:10px;min-width:140px}
+.match-item{padding:14px;border-radius:14px;border:3px solid var(--border);background:var(--card);cursor:pointer;text-align:center;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:8px;user-select:none}
+.match-item:hover:not(.matched):not(.correct){border-color:var(--accent);transform:translateY(-2px)}
+.match-item.selected{border-color:var(--accent);background:#FFF3E0;box-shadow:0 0 0 3px rgba(255,107,53,.2)}
+.match-item.correct{border-color:var(--success);background:#E8F5E9;opacity:.7;cursor:default}
+.match-item.wrong{border-color:var(--error);background:#FFEBEE}
+.frac-pie{width:56px;height:56px;border-radius:50%;position:relative;flex-shrink:0}
+.frac-pie::after{content:'';position:absolute;top:50%;left:50%;width:24px;height:24px;border-radius:50%;background:var(--card);transform:translate(-50%,-50%)}
+.frac-text{font-weight:800;font-size:1.05rem}
+.quiz-visual{text-align:center;margin-bottom:16px}
+.quiz-question{font-size:1.15rem;font-weight:700;text-align:center;margin-bottom:20px;line-height:1.5}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-opt{padding:16px 20px;border-radius:14px;border:3px solid var(--border);background:var(--card);cursor:pointer;font-size:1.05rem;font-weight:700;text-align:center;transition:all .2s;font-family:inherit}
+.quiz-opt:hover:not(.disabled){border-color:var(--accent);transform:translateY(-2px)}
+.quiz-opt.correct-opt{border-color:var(--success);background:#E8F5E9;color:var(--success)}
+.quiz-opt.wrong-opt{border-color:var(--error);background:#FFEBEE;color:var(--error);animation:shake .4s}
+.quiz-opt.disabled{pointer-events:none;opacity:.6}
+.quiz-opt.show-correct{border-color:var(--success);background:#E8F5E9}
+.memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:400px;margin:0 auto}
+.memory-card{aspect-ratio:1;perspective:600px;cursor:pointer}
+.memory-card-inner{width:100%;height:100%;position:relative;transition:transform .5s;transform-style:preserve-3d}
+.memory-card.flipped .memory-card-inner{transform:rotateY(180deg)}
+.memory-card.matched .memory-card-inner{transform:rotateY(180deg)}
+.memory-face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;padding:6px;text-align:center}
+.memory-front{background:linear-gradient(135deg,var(--accent2),#00D2B4);color:#fff;font-size:1.5rem}
+.memory-back{transform:rotateY(180deg);background:var(--card);border:3px solid var(--border)}
+.memory-card.matched .memory-back{border-color:var(--success);background:#E8F5E9}
+.classify-word{text-align:center;margin-bottom:20px}
+.classify-word-text{font-size:2rem;font-weight:900;letter-spacing:2px;padding:16px 24px;background:var(--card);border-radius:18px;display:inline-block;border:3px solid var(--border)}
+.syllable-stressed{color:var(--accent);text-decoration:underline;text-underline-offset:6px}
+.classify-bins{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.classify-bin{flex:1;min-width:100px;padding:18px 12px;border-radius:16px;border:3px dashed var(--border);text-align:center;cursor:pointer;transition:all .25s;font-weight:800;font-size:.95rem}
+.classify-bin:hover{transform:translateY(-3px)}
+.classify-bin.bin-aguda:hover{border-color:var(--l1);background:#FFF3E0}
+.classify-bin.bin-llana:hover{border-color:var(--l2);background:#E0F7F5}
+.classify-bin.bin-esdrujula:hover{border-color:var(--l3);background:#FDE8F0}
+.classify-bin.bin-correct{border-style:solid;transform:scale(1.05)}
+.classify-bin.bin-aguda.bin-correct{border-color:var(--l1);background:#FFF3E0}
+.classify-bin.bin-llana.bin-correct{border-color:var(--l2);background:#E0F7F5}
+.classify-bin.bin-esdrujula.bin-correct{border-color:var(--l3);background:#FDE8F0}
+.classify-bin.bin-wrong{animation:shake .4s;border-color:var(--error);background:#FFEBEE}
+.chain-slots{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.chain-slot{min-width:80px;min-height:50px;border-radius:12px;border:3px dashed var(--border);display:flex;align-items:center;justify-content:center;padding:8px 12px;font-weight:700;font-size:.85rem;text-align:center;transition:all .3s}
+.chain-slot.filled{border-style:solid;border-color:var(--accent2);background:#E0F7F5}
+.chain-slot.correct-slot{border-color:var(--success);background:#E8F5E9}
+.chain-slot.wrong-slot{border-color:var(--error);background:#FFEBEE;animation:shake .4s}
+.chain-arrow{color:var(--muted);font-size:1.2rem}
+.chain-cards{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.chain-card{padding:12px 18px;border-radius:12px;border:3px solid var(--border);background:var(--card);cursor:pointer;font-weight:700;font-size:.95rem;transition:all .2s;user-select:none}
+.chain-card:hover{border-color:var(--accent2);transform:translateY(-3px)}
+.chain-card.used{opacity:.3;pointer-events:none}
+.planets-row{display:flex;align-items:flex-end;justify-content:center;gap:6px;padding:20px 0;overflow-x:auto}
+.planet{display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s;gap:4px}
+.planet:hover{transform:scale(1.15)}
+.planet-sphere{border-radius:50%;transition:box-shadow .3s}
+.planet.active .planet-sphere{box-shadow:0 0 0 4px rgba(255,107,53,.4)}
+.planet-label{font-size:.7rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.planet-info{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px 20px;margin-top:12px;min-height:80px;transition:all .3s}
+.planet-info h3{margin-bottom:6px}
+.planet-info p{font-size:.9rem;color:var(--muted);line-height:1.5}
+.complete-container{text-align:center;padding:40px 0}
+.complete-icon{font-size:4rem;margin-bottom:16px;animation:bounce 1s ease infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.complete-stars{display:flex;justify-content:center;gap:12px;margin:20px 0}
+.visual-bar{height:30px;background:var(--border);border-radius:15px;overflow:hidden;margin:12px 0;position:relative}
+.visual-bar-fill{height:100%;border-radius:15px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:.75rem;font-weight:800;color:#fff}
+.number-line{position:relative;height:40px;margin:20px 0;background:var(--border);border-radius:20px}
+.number-line-mark{position:absolute;top:-22px;transform:translateX(-50%);font-size:.75rem;font-weight:700;color:var(--muted)}
+.number-line-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 
-        :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --primary-neon: #00ffcc;
-            --secondary-neon: #ff007f;
-            --text-main: #c9d1d9;
-            --text-title: #ffffff;
-            --success: #39ff14;
-            --danger: #ff0033;
-        }
+/* ===== LECTURA DE COMPRENSIÓN ===== */
+.reading-container{animation:slideUp .5s ease}
+.reading-book{background:linear-gradient(135deg,#FFFBF0,#FFF5E6);border:3px solid var(--border);border-radius:20px;padding:0;overflow:hidden;position:relative}
+.reading-book-header{background:linear-gradient(135deg,var(--accent2),#00D2B4);padding:18px 24px;display:flex;align-items:center;gap:12px}
+.reading-book-header i{color:#fff;font-size:1.3rem}
+.reading-book-header span{color:#fff;font-weight:800;font-size:1.05rem}
+.reading-book-body{padding:24px;line-height:1.85;font-size:1.02rem;color:#444}
+.reading-book-body p{margin-bottom:14px}
+.reading-book-body p:last-child{margin-bottom:0}
+.reading-highlight{background:linear-gradient(180deg,transparent 60%,rgba(0,180,166,.15) 60%);padding:0 2px}
+.reading-ornament{text-align:center;color:var(--accent2);font-size:1.4rem;margin:8px 0;letter-spacing:8px;opacity:.4}
+.reading-btn-row{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.reading-question{font-size:1.08rem;font-weight:700;text-align:center;margin-bottom:18px;line-height:1.6;color:var(--fg)}
+.reading-type-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:800;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.badge-literal{background:#E0F7F5;color:var(--accent2)}
+.badge-inferencial{background:#FFF3E0;color:var(--accent)}
+.badge-vocab{background:#FDE8F0;color:var(--accent3)}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Rajdhani', sans-serif;
-            line-height: 1.6;
-            padding-bottom: 60px;
-            background-image: radial-gradient(circle at 50% 0%, #1a2333 0%, transparent 70%);
-        }
-
-        /* HEADER GAMER */
-        header {
-            background-color: rgba(22, 27, 34, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--primary-neon);
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-        }
-
-        header h1 {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1.5rem;
-            color: var(--primary-neon);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
-        }
-
-        header p {
-            font-size: 1.2rem;
-            color: var(--text-title);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* DASHBOARD (SELECCIÓN DE NIVEL) */
-        .level-select-title {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1rem;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 0 0 5px var(--secondary-neon);
-        }
-
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: var(--panel-bg);
-            border-radius: 15px;
-            padding: 25px;
-            border: 2px solid #30363d;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-            transform: skewX(-25deg);
-            transition: 0.5s;
-        }
-
-        .card:hover::before {
-            left: 125%;
-        }
-
-        .card:hover {
-            border-color: var(--primary-neon);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-            transform: translateY(-5px);
-        }
-
-        .card-tag {
-            align-self: flex-start;
-            background: rgba(0, 255, 204, 0.1);
-            color: var(--primary-neon);
-            font-size: 0.85rem;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            border: 1px solid var(--primary-neon);
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-        }
-
-        .card-tag.locked {
-            background: rgba(255, 0, 51, 0.1);
-            color: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .card h2 {
-            font-size: 1.8rem;
-            color: var(--text-title);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .card p {
-            font-size: 1.1rem;
-            color: #8b949e;
-            margin-bottom: 25px;
-            flex-grow: 1;
-        }
-
-        .btn {
-            display: block;
-            background: transparent;
-            color: var(--primary-neon);
-            text-align: center;
-            padding: 15px 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: 2px solid var(--primary-neon);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Rajdhani', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover:not(:disabled) {
-            background: var(--primary-neon);
-            color: #000;
-            box-shadow: 0 0 15px var(--primary-neon);
-        }
-
-        .btn:disabled {
-            border-color: #30363d !important;
-            color: #484f58 !important;
-            cursor: not-allowed;
-            background: #161b22 !important;
-            box-shadow: none !important;
-        }
-
-        /* VISTAS */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .back-link {
-            display: inline-block;
-            color: var(--primary-neon);
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            cursor: pointer;
-            border: 1px solid var(--primary-neon);
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: 0.2s;
-        }
-
-        .back-link:hover {
-            background: var(--primary-neon);
-            color: #000;
-        }
-
-        /* LECTURAS Y MULTIMEDIA */
-        .reading-box {
-            background: var(--panel-bg);
-            border: 1px solid #30363d;
-            border-left: 5px solid var(--secondary-neon);
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .reading-box h3 {
-            color: #fff;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .reading-box p {
-            font-size: 1.2rem;
-            color: #c9d1d9;
-            margin-bottom: 18px;
-            text-align: justify;
-        }
-
-        .feature-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 2px solid #30363d;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        /* CUESTIONARIO GAMER */
-        .quiz-title {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1.2rem;
-            color: #fff;
-            text-align: center;
-            margin: 40px 0 30px;
-            text-shadow: 0 0 5px var(--secondary-neon);
-            line-height: 1.5;
-        }
-
-        .question-block {
-            background: #0d1117;
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-            margin-bottom: 25px;
-            transition: border-color 0.3s;
-        }
-        
-        .question-block.answered {
-            border-left: 4px solid var(--primary-neon);
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 15px;
-        }
-
-        .options-list {
-            list-style: none;
-            display: grid;
-            gap: 12px;
-        }
-
-        .option-item label {
-            display: flex;
-            align-items: center;
-            background: var(--panel-bg);
-            padding: 15px 20px;
-            border: 2px solid #30363d;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 1.15rem;
-            color: #c9d1d9;
-            font-weight: 600;
-        }
-
-        .option-item label:hover {
-            border-color: #58a6ff;
-            background: rgba(88, 166, 255, 0.1);
-        }
-
-        .option-item input[type="radio"] {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #8b949e;
-            border-radius: 50%;
-            margin-right: 15px;
-            outline: none;
-            position: relative;
-        }
-
-        .option-item input[type="radio"]:checked {
-            border-color: var(--primary-neon);
-        }
-
-        .option-item input[type="radio"]:checked::before {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px; height: 10px;
-            background: var(--primary-neon);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--primary-neon);
-        }
-
-        /* FEEDBACK STATES */
-        .correct-answer {
-            background: rgba(57, 255, 20, 0.1) !important;
-            border-color: var(--success) !important;
-            color: #fff !important;
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
-        }
-
-        .wrong-answer {
-            background: rgba(255, 0, 51, 0.1) !important;
-            border-color: var(--danger) !important;
-            color: #fff !important;
-        }
-
-        /* RESULTADOS LEVEL COMPLETED */
-        .results-box {
-            display: none;
-            background: linear-gradient(135deg, #161b22, #0d1117);
-            border: 2px solid var(--primary-neon);
-            border-radius: 15px;
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 40px;
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
-        }
-
-        .results-box h4 {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 1.5rem;
-            color: var(--primary-neon);
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        .results-box p {
-            font-size: 1.4rem;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-        
-        .xp-bar {
-            width: 100%;
-            height: 20px;
-            background: #30363d;
-            border-radius: 10px;
-            margin-top: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .xp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ffcc, #00b3ff);
-            width: 0%;
-            transition: width 1.5s ease-out;
-            box-shadow: 0 0 10px #00ffcc;
-        }
-
-        /* Sticky Footer Tracker */
-        .progress-tracker {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(22, 27, 34, 0.95);
-            border-top: 2px solid var(--primary-neon);
-            padding: 15px;
-            text-align: center;
-            z-index: 100;
-            display: none;
-            box-shadow: 0 -5px 20px rgba(0, 255, 204, 0.1);
-        }
-
-        .progress-tracker.active {
-            display: block;
-        }
-
-    </style>
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.pop-in{animation:popIn .4s ease forwards}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.slide-up{animation:slideUp .4s ease forwards}
+.mini-confetti{position:fixed;pointer-events:none;z-index:999;width:8px;height:8px;border-radius:2px;animation:confettiFall 1s ease forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(100px) rotate(720deg) scale(.3)}}
+@media(max-width:480px){
+    h1{font-size:1.6rem}h2{font-size:1.25rem}
+    .match-container{flex-direction:column;align-items:center}
+    .match-col{flex-direction:row;flex-wrap:wrap;justify-content:center}
+    .memory-grid{grid-template-columns:repeat(3,1fr)}
+    .classify-bins{flex-direction:column;align-items:center}
+    .classify-bin{min-width:200px}
+    .planets-row{gap:4px}
+    .reading-book-body{padding:16px;font-size:.95rem}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
+<div class="bg-shapes"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
+<canvas id="confetti-canvas"></canvas>
+<div id="app"></div>
+<script>
+/* ===================== DATOS ===================== */
+const LEVELS = [
+    {
+        id:1, title:'Repaso de 5to', subtitle:'Reafirma lo que ya aprendiste',
+        color:'var(--l1)', icon:'fa-rotate-left', cardClass:'card-l1', btnClass:'btn-primary',
+        activities:[
+            {
+                subject:'Matemáticas', icon:'fa-calculator', title:'Fracciones Equivalentes',
+                type:'matching',
+                data:{
+                    pairs:[
+                        {left:{num:1,den:2},right:{num:3,den:6},id:'a'},
+                        {left:{num:2,den:3},right:{num:4,den:6},id:'b'},
+                        {left:{num:3,den:4},right:{num:6,den:8},id:'c'},
+                        {left:{num:1,den:4},right:{num:2,den:8},id:'d'},
+                        {left:{num:2,den:5},right:{num:4,den:10},id:'e'}
+                    ],
+                    leftColor:'var(--l1)', rightColor:'var(--accent2)'
+                }
+            },
+            {
+                subject:'Español', icon:'fa-spell-check', title:'Ortografía: b, v, g, j, h, c, s, z',
+                type:'quiz',
+                data:{
+                    questions:[
+                        {q:'___acía mucho frío en la montaña',opts:['H','J','G'],answer:0},
+                        {q:'El ___itomate es rojo y jugoso',opts:['G','J','X'],answer:1},
+                        {q:'La ___aca come pasto en el campo',opts:['B','V','W'],answer:1},
+                        {q:'El ca___allo corre muy rápido',opts:['b','v','g'],answer:0},
+                        {q:'La llu___ia mojó toda la calle',opts:['v','b','y'],answer:1},
+                        {q:'Me gusta el ___ocolate caliente',opts:['s','c','z'],answer:1},
+                        {q:'El ___apato es nuevo',opts:['s','c','z'],answer:2},
+                        {q:'___oy a jugar al fútbol',opts:['V','B','H'],answer:2}
+                    ]
+                }
+            },
+            {
+                subject:'Ciencias', icon:'fa-earth-americas', title:'El Sistema Solar',
+                type:'explore',
+                data:{
+                    planets:[
+                        {name:'Mercurio',size:16,color:'#B0B0B0',info:'Es el planeta más cercano al Sol y el más pequeño del sistema solar. No tiene atmósfera.'},
+                        {name:'Venus',size:22,color:'#E8A735',info:'Es el planeta más caliente por su atmósfera densa. Gira al revés que los demás planetas.'},
+                        {name:'Tierra',size:24,color:'#4A90D9',info:'Nuestro hogar. Es el único planeta conocido que tiene agua líquida y vida.'},
+                        {name:'Marte',size:20,color:'#D94A38',info:'Lo llaman el planeta rojo por su óxido de hierro. Tiene el volcán más grande: el Monte Olimpo.'},
+                        {name:'Júpiter',size:40,color:'#D4A574',info:'Es el planeta más grande. Tiene una gran mancha roja que es una tormenta gigante.'},
+                        {name:'Saturno',size:36,color:'#E8D5A0',info:'Es famoso por sus anillos brillantes formados por hielo y roca.'},
+                        {name:'Urano',size:28,color:'#7EC8C8',info:'Gira de lado, como rodando. Es un planeta de hielo gigante con color azul verdoso.'},
+                        {name:'Neptuno',size:26,color:'#3366CC',info:'Es el planeta más lejano del Sol. Tiene los vientos más fuertes del sistema solar.'}
+                    ],
+                    questions:[
+                        {q:'¿Cuál es el planeta más grande del sistema solar?',opts:['Saturno','Júpiter','Neptuno'],answer:1},
+                        {q:'¿Qué planeta es conocido como el planeta rojo?',opts:['Venus','Mercurio','Marte'],answer:2},
+                        {q:'¿Cuál es el planeta más cercano al Sol?',opts:['Venus','Mercurio','Tierra'],answer:1},
+                        {q:'¿Qué planeta tiene anillos brillantes?',opts:['Júpiter','Urano','Saturno'],answer:2},
+                        {q:'¿Cuál es nuestro planeta?',opts:['Marte','Tierra','Venus'],answer:1}
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id:2, title:'Transición', subtitle:'Puente entre 5to y 6to grado',
+        color:'var(--l2)', icon:'fa-arrows-rotate', cardClass:'card-l2', btnClass:'btn-teal',
+        activities:[
+            {
+                subject:'Español', icon:'fa-book-open', title:'Lectura de Comprensión',
+                type:'reading',
+                data:{
+                    title:'El increíble viaje de la mariposa monarca',
+                    text:`<p>Cada año, cuando el otoño llega a <span class="reading-highlight">Canadá y el norte de Estados Unidos</span>, millones de mariposas monarca comienzan un viaje extraordinario. Estas pequeñas criaturas, con alas de color naranja brillante y bordes negros, recorren más de <span class="reading-highlight">4,000 kilómetros</span> para llegar a los bosques de oyamel en <span class="reading-highlight">Michoacán y el Estado de México</span>.</p>
+                    <div class="reading-ornament">&#10047; &#10047; &#10047;</div>
+                    <p>¿Cómo logran navegar tanto sin haber hecho el viaje antes? Los científicos descubrieron que las monarcas usan el <span class="reading-highlight">sol como brújula</span> y también detectan el campo magnético de la Tierra. Además, siguen la posición de las estrellas durante la noche.</p>
+                    <p>El viaje dura alrededor de dos meses. Durante el camino, las mariposas se alimentan de <span class="reading-highlight">néctar de flores</span> y descansan en árboles. Muchas no logran llegar, pero las que sí llegan se reúnen en los árboles por miles, cubriendo las ramas como si fueran hojas anaranjadas.</p>
+                    <div class="reading-ornament">&#10047; &#10047; &#10047;</div>
+                    <p>En primavera, las monarcas inician el viaje de regreso. Pero hay un detalle fascinante: <span class="reading-highlight">la generación que regresa no es la misma que llegó</span>. Las monarcas que nacen en México viven solo unos meses, pero ponen huevos durante el camino. Sus hijas continúan el viaje hacia el norte, y así sucesivamente hasta que una nueva generación llega a Canadá.</p>
+                    <p>Desafortunadamente, la <span class="reading-highlight">deforestación</span> de los bosques de oyamel, el uso de pesticidas y el cambio climático amenazan esta migración. Por eso, en México se crearon reservas protegidas como el <span class="reading-highlight">Santuario de la Mariposa Monarca</span> en Angangueo, Michoacán, declarado Patrimonio de la Humanidad por la UNESCO.</p>`,
+                    questions:[
+                        {
+                            type:'literal', label:'Literal',
+                            q:'¿De dónde parten las mariposas monarca y a dónde llegan?',
+                            opts:['De México a Canadá','De Canadá y EE.UU. a Michoacán y Edomex','De Sudamérica a Norteamérica','De la Ciudad de México a Cancún'],
+                            answer:1
+                        },
+                        {
+                            type:'inferencial', label:'Inferencial',
+                            q:'Si una mariposa monarca sale de Canadá en octubre, ¿cuándo llegaría aproximadamente a los bosques de México?',
+                            opts:['En una semana','En un año','En unos dos meses','En seis meses'],
+                            answer:2
+                        },
+                        {
+                            type:'vocab', label:'Vocabulario',
+                            q:'¿Qué significa la palabra "deforestación" en el texto?',
+                            opts:['Plantar nuevos árboles en el bosque','Cortar y destruir los árboles de un bosque','Proteger los árboles con cercos','Estudiar los árboles del bosque'],
+                            answer:1
+                        },
+                        {
+                            type:'literal', label:'Literal',
+                            q:'¿Cuáles son los dos recursos que las monarcas usan para orientarse?',
+                            opts:['El viento y la lluvia','Los ríos y las montañas','El sol y el campo magnético','Las flores y los árboles'],
+                            answer:2
+                        },
+                        {
+                            type:'inferencial', label:'Inferencial',
+                            q:'¿Por qué el texto dice que "la generación que regresa no es la misma que llegó"?',
+                            opts:['Porque las mariposas cambian de color','Porque las monarcas mueren y sus hijas continúan el viaje','Porque se pierden y otras las reemplazan','Porque volaban muy alto y no se veían'],
+                            answer:1
+                        },
+                        {
+                            type:'inferencial', label:'Inferencial',
+                            q:'¿Qué pasaría si los bosques de oyamel desaparecieran completamente?',
+                            opts:['Las monarcas viajarían a la playa','Las monarcas no tendrían dónde pasar el invierno y la migración peligraría','Las monarcas aprenderían a vivir en la ciudad','No pasaría nada, las monarcas no necesitan esos bosques'],
+                            answer:1
+                        },
+                        {
+                            type:'vocab', label:'Vocabulario',
+                            q:'En el texto, ¿qué es un "santuario"?',
+                            opts:['Un hospital para mariposas','Un laboratorio científico','Un lugar protegido donde se cuida algo valioso','Un museo de insectos'],
+                            answer:2
+                        }
+                    ]
+                }
+            },
+            {
+                subject:'Matemáticas', icon:'fa-calculator', title:'Operaciones con Decimales',
+                type:'quiz',
+                data:{
+                    questions:[
+                        {q:'3.5 + 2.7 = ?',opts:['5.2','6.2','6.12','5.12'],answer:1,visual:{type:'numberline',values:[0,3.5,6.2,10]}},
+                        {q:'8.4 - 3.1 = ?',opts:['5.3','5.13','5.5','4.3'],answer:0,visual:{type:'numberline',values:[0,3.1,5.3,8.4]}},
+                        {q:'2.3 × 4 = ?',opts:['8.2','9.2','8.12','9.12'],answer:1,visual:{type:'bar',value:9.2,max:12,label:'9.2',color:'var(--accent2)'}},
+                        {q:'15.6 ÷ 3 = ?',opts:['5.1','5.3','5.2','4.2'],answer:2,visual:{type:'bar',value:5.2,max:10,label:'5.2',color:'var(--accent2)'}},
+                        {q:'¿Cuál es mayor?',opts:['3.45','3.54','3.09','3.5'],answer:1,visual:{type:'bars',values:[{v:3.45,c:'var(--l1)'},{v:3.54,c:'var(--success)'},{v:3.09,c:'var(--muted)'},{v:3.5,c:'var(--accent3)'}],max:4}},
+                        {q:'0.25 + 0.75 = ?',opts:['0.100','1.0','1.00','0.50'],answer:2,visual:{type:'bar',value:1,max:2,label:'1.00',color:'var(--accent2)'}}
+                    ]
+                }
+            },
+            {
+                subject:'Español', icon:'fa-font', title:'Sinónimos y Antónimos',
+                type:'memory',
+                data:{
+                    pairs:[
+                        {a:'Grande',b:'Enorme',type:'sin'},
+                        {a:'Rápido',b:'Veloz',type:'sin'},
+                        {a:'Bonito',b:'Hermoso',type:'sin'},
+                        {a:'Fuerte',b:'Débil',type:'ant'},
+                        {a:'Claro',b:'Oscuro',type:'ant'},
+                        {a:'Feliz',b:'Triste',type:'ant'}
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        id:3, title:'Preparación 6to', subtitle:'Lo que viene en tu nuevo grado',
+        color:'var(--l3)', icon:'fa-rocket', cardClass:'card-l3', btnClass:'btn-pink',
+        activities:[
+            {
+                subject:'Matemáticas', icon:'fa-calculator', title:'Porcentajes',
+                type:'quiz',
+                data:{
+                    questions:[
+                        {q:'¿Cuánto es el 50% de 200?',opts:['50','100','150','200'],answer:1,visual:{type:'bar',value:50,max:100,label:'50%',color:'var(--accent3)'}},
+                        {q:'¿Cuánto es el 25% de 80?',opts:['15','25','20','30'],answer:2,visual:{type:'bar',value:25,max:100,label:'25%',color:'var(--accent3)'}},
+                        {q:'¿Qué porcentaje es 30 de 60?',opts:['25%','75%','60%','50%'],answer:3,visual:{type:'bar',value:50,max:100,label:'50%',color:'var(--accent3)'}},
+                        {q:'Un artículo cuesta $150 con 20% de descuento. ¿Cuánto pagas?',opts:['$120','$130','$100','$140'],answer:0,visual:{type:'bar',value:80,max:100,label:'Pagas 80%',color:'var(--accent3)'}},
+                        {q:'¿Cuánto es el 10% de 450?',opts:['35','40','45','50'],answer:2,visual:{type:'bar',value:10,max:100,label:'10%',color:'var(--accent3)'}},
+                        {q:'Si 8 de 40 alumnos faltaron, ¿qué porcentaje faltó?',opts:['10%','20%','25%','15%'],answer:1,visual:{type:'bar',value:20,max:100,label:'20%',color:'var(--accent3)'}}
+                    ]
+                }
+            },
+            {
+                subject:'Español', icon:'fa-font', title:'Acentuación: Agudas, Llanas, Esdrújulas',
+                type:'classify',
+                data:{
+                    words:[
+                        {text:'Café',stressed:1,type:'aguda'},
+                        {text:'Mamá',stressed:1,type:'aguda'},
+                        {text:'Lápiz',stressed:1,type:'aguda'},
+                        {text:'Árbol',stressed:0,type:'llana'},
+                        {text:'Casa',stressed:0,type:'llana'},
+                        {text:'Puerta',stressed:1,type:'llana'},
+                        {text:'Escuela',stressed:0,type:'esdrujula'},
+                        {text:'Teléfono',stressed:2,type:'esdrujula'},
+                        {text:'Música',stressed:0,type:'esdrujula'}
+                    ],
+                    categories:[
+                        {id:'aguda',label:'Aguda',desc:'Fuerza en la última sílaba',color:'var(--l1)'},
+                        {id:'llana',label:'Llana',desc:'Fuerza en la penúltima sílaba',color:'var(--l2)'},
+                        {id:'esdrujula',label:'Esdrújula',desc:'Fuerza en la antepenúltima sílaba',color:'var(--l3)'}
+                    ]
+                }
+            },
+            {
+                subject:'Ciencias', icon:'fa-leaf', title:'Cadenas Alimenticias',
+                type:'order',
+                data:{
+                    chains:[
+                        {label:'Cadena del campo',correct:['Pasto','Saltamontes','Rana','Serpiente'],options:['Rana','Pasto','Serpiente','Saltamontes']},
+                        {label:'Cadena del lago',correct:['Algas','Pez pequeño','Pez grande','Pelicano'],options:['Pez grande','Algas','Pelicano','Pez pequeño']},
+                        {label:'Cadena del bosque',correct:['Semilla','Ratón','Búho','Descomponedor'],options:['Descomponedor','Semilla','Búho','Ratón']}
+                    ]
+                }
+            }
+        ]
+    }
+];
 
-    <header>
-        <h1>Player 1 Ready</h1>
-        <p>Centro de Entrenamiento Cognitivo</p>
-    </header>
+/* ===================== ESTADO ===================== */
+const state={screen:'menu',currentLevel:null,currentActivity:null,stars:{}};
+function loadProgress(){try{const s=localStorage.getItem('desafio_verano_stars');if(s)state.stars=JSON.parse(s)}catch(e){}}
+function saveProgress(){try{localStorage.setItem('desafio_verano_stars',JSON.stringify(state.stars))}catch(e){}}
+function getStars(l,a){return state.stars[`l${l}a${a}`]||0}
+function setStars(l,a,v){state.stars[`l${l}a${a}`]=v;saveProgress()}
+function getTotalStars(){return Object.values(state.stars).reduce((a,b)=>a+b,0)}
+function getLevelStars(lv){let s=0;for(let i=1;i<=3;i++)s+=getStars(lv,i);return s}
 
-    <div class="container">
-        
-        <!-- PANTALLA DE SELECCIÓN DE NIVEL -->
-        <div id="dashboard-view" class="view-section active">
-            <h2 class="level-select-title">► SELECCIONA TU MISIÓN ◄</h2>
-            <div class="grid-cards">
-                
-                <!-- Nivel 1 -->
-                <div class="card">
-                    <div>
-                        <span class="card-tag">Misión Desbloqueada</span>
-                        <h2>Nivel 1: Retención de Datos</h2>
-                        <p>Infiltra la historia maya y el vuelo de las monarcas. Analiza los textos ilustrados y supera el interrogatorio de 20 preguntas.</p>
-                    </div>
-                    <button class="btn" onclick="switchView('activity-1')">▶ Iniciar Nivel</button>
+/* ===================== SONIDOS ===================== */
+let audioCtx=null;
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx}
+function playSound(type){try{const ctx=getAC();if(ctx.state==='suspended')ctx.resume();const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);const t=ctx.currentTime;if(type==='correct'){o.type='sine';o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+.08);o.frequency.setValueAtTime(784,t+.16);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.01,t+.4);o.start(t);o.stop(t+.4)}else if(type==='wrong'){o.type='sawtooth';o.frequency.setValueAtTime(180,t);o.frequency.setValueAtTime(140,t+.15);g.gain.setValueAtTime(.15,t);g.gain.exponentialRampToValueAtTime(.01,t+.3);o.start(t);o.stop(t+.3)}else if(type==='complete'){o.type='sine';o.frequency.setValueAtTime(523,t);o.frequency.setValueAtTime(659,t+.1);o.frequency.setValueAtTime(784,t+.2);o.frequency.setValueAtTime(1047,t+.3);g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.01,t+.6);o.start(t);o.stop(t+.6)}else if(type==='click'){o.type='sine';o.frequency.setValueAtTime(800,t);g.gain.setValueAtTime(.1,t);g.gain.exponentialRampToValueAtTime(.01,t+.05);o.start(t);o.stop(t+.05)}}catch(e){}}
+
+/* ===================== CONFETI ===================== */
+function miniConfetti(x,y){const colors=['#FF6B35','#00B4A6','#FFD166','#E84393','#00C853'];for(let i=0;i<12;i++){const el=document.createElement('div');el.className='mini-confetti';el.style.left=(x+(Math.random()-.5)*60)+'px';el.style.top=(y+(Math.random()-.5)*30)+'px';el.style.background=colors[Math.floor(Math.random()*colors.length)];el.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(el);setTimeout(()=>el.remove(),1000)}}
+function showConfetti(){const c=document.getElementById('confetti-canvas'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;c.style.display='block';const colors=['#FF6B35','#00B4A6','#FFD166','#E84393','#00C853','#4A90D9'];const particles=[];for(let i=0;i<120;i++)particles.push({x:Math.random()*c.width,y:Math.random()*c.height-c.height,w:Math.random()*10+4,h:Math.random()*6+3,color:colors[Math.floor(Math.random()*colors.length)],speed:Math.random()*3+2,angle:Math.random()*Math.PI*2,spin:(Math.random()-.5)*.15,drift:(Math.random()-.5)*2});let frame=0;function animate(){ctx.clearRect(0,0,c.width,c.height);particles.forEach(p=>{p.y+=p.speed;p.angle+=p.spin;p.x+=Math.sin(p.angle)*1.5+p.drift*.3;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});frame++;if(frame<150)requestAnimationFrame(animate);else c.style.display='none'}animate()}
+
+/* ===================== UTILIDADES ===================== */
+function fracToDeg(n,d){return(n/d)*360}
+function fracPieHTML(frac,color){const deg=fracToDeg(frac.num,frac.den);return`<div class="frac-pie" style="background:conic-gradient(${color} 0deg ${deg}deg,var(--border) ${deg}deg 360deg)"></div>`}
+function starsHTML(count,big){let s='';for(let i=0;i<3;i++)s+=`<i class="fa-solid fa-star star ${big?'big':''} ${i<count?'earned':''}"></i>`;return s}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function splitSyllables(word){const m=word.match(/[^aeiouáéíóú]*[aeiouáéíóú]+(?:[^aeiouáéíóú]*$|[^aeiouáéíóú](?=[^aeiouáéíóú]))?/gi);return m||[word]}
+function lighten(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgb(${Math.min(255,r+80)},${Math.min(255,g+80)},${Math.min(255,b+80)})`}
+function updateProgress(current,total){const f=document.getElementById('act-progress');if(f)f.style.width=((current/total)*100)+'%'}
+
+function completeActivity(stars){
+    const lv=state.currentLevel,ac=state.currentActivity;
+    setStars(lv,ac,Math.max(getStars(lv,ac),stars));
+    playSound('complete');
+    const ts=document.getElementById('activity-stars-top');
+    if(ts)ts.innerHTML=starsHTML(stars);
+    const allDone=LEVELS[lv-1].activities.every((_,i)=>getStars(lv,i+1)>0);
+    setTimeout(()=>{if(allDone){state.screen='levelComplete';showConfetti()}else state.screen='level';render()},1200);
+}
+
+/* ===================== RENDERIZADO ===================== */
+function render(){
+    const app=document.getElementById('app');
+    switch(state.screen){
+        case 'menu':app.innerHTML=renderMenu();break;
+        case 'level':app.innerHTML=renderLevel();break;
+        case 'activity':app.innerHTML=renderActivity();initActivity();break;
+        case 'levelComplete':app.innerHTML=renderLevelComplete();break;
+    }
+}
+
+function renderMenu(){
+    let lh=LEVELS.map(lv=>{
+        const ls=getLevelStars(lv.id);
+        return`<div class="card ${lv.cardClass} level-card" data-action="openLevel" data-level="${lv.id}"><div class="level-icon" style="background:${lv.color}"><i class="fa-solid ${lv.icon}"></i></div><div class="level-info"><h2 style="color:${lv.color}">Nivel ${lv.id}: ${lv.title}</h2><p>${lv.subtitle}</p></div><div class="level-stars">${starsHTML(ls)}<span>${ls}/9</span></div></div>`;
+    }).join('');
+    return`<div class="menu-header slide-up"><h1>Desafío de Verano</h1><p>5° de primaria hacia 6°</p><div class="total-stars"><i class="fa-solid fa-trophy"></i><span>${getTotalStars()} de 27 estrellas</span></div></div>${lh}<p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:16px;font-weight:600"><i class="fa-solid fa-hand-pointer"></i> Toca un nivel para comenzar</p>`;
+}
+
+function renderLevel(){
+    const lv=LEVELS[state.currentLevel-1];
+    let ah=lv.activities.map((a,i)=>{
+        const s=getStars(lv.id,i+1);
+        return`<div class="card ${lv.cardClass} act-card" data-action="openActivity" data-act="${i+1}"><div class="act-icon" style="background:${lv.color}"><i class="fa-solid ${a.icon}"></i></div><div class="act-info"><h3>${a.title}</h3><p>${a.subject}</p></div><div class="stars">${starsHTML(s)}</div></div>`;
+    }).join('');
+    return`<div class="level-header slide-up"><button class="btn btn-back" data-action="goMenu"><i class="fa-solid fa-arrow-left"></i></button><div class="level-title"><h2 style="color:${lv.color}">Nivel ${lv.id}: ${lv.title}</h2><p style="color:var(--muted);font-size:.85rem">${lv.subtitle}</p></div><div class="stars">${starsHTML(getLevelStars(lv.id))}</div></div>${ah}`;
+}
+
+function renderActivity(){
+    const lv=LEVELS[state.currentLevel-1],a=lv.activities[state.currentActivity-1];
+    return`<div class="activity-header slide-up"><button class="btn btn-back" data-action="goLevel"><i class="fa-solid fa-arrow-left"></i></button><div class="activity-title"><h3 style="color:${lv.color}">${a.title}</h3><p style="color:var(--muted);font-size:.8rem">${a.subject}</p></div><div class="stars" id="activity-stars-top">${starsHTML(0)}</div></div><div class="progress-bar"><div class="progress-fill" id="act-progress" style="width:0%;background:${lv.color}"></div></div><div id="activity-area"></div>`;
+}
+
+function renderLevelComplete(){
+    const lv=LEVELS[state.currentLevel-1],ls=getLevelStars(lv.id),hasNext=state.currentLevel<3;
+    return`<div class="complete-container"><div class="complete-icon" style="color:${lv.color}"><i class="fa-solid fa-trophy"></i></div><h2 style="color:${lv.color}">Nivel ${lv.id} Completado</h2><p style="color:var(--muted);margin:8px 0 16px;font-weight:600">${lv.title}</p><div class="complete-stars">${starsHTML(ls,true)}</div><p style="font-size:1.2rem;font-weight:800;margin-bottom:24px">${ls} de 9 estrellas</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn btn-back" data-action="goLevel"><i class="fa-solid fa-arrow-left"></i> Ver actividades</button>${hasNext?`<button class="btn ${lv.btnClass}" data-action="nextLevel">Siguiente nivel <i class="fa-solid fa-arrow-right"></i></button>`:''}</div></div>`;
+}
+
+/* ===================== ACTIVIDADES ===================== */
+function initActivity(){
+    const lv=LEVELS[state.currentLevel-1],a=lv.activities[state.currentActivity-1];
+    switch(a.type){
+        case 'matching':initMatching(a);break;
+        case 'quiz':initQuiz(a);break;
+        case 'explore':initExplore(a);break;
+        case 'reading':initReading(a);break;
+        case 'memory':initMemory(a);break;
+        case 'classify':initClassify(a);break;
+        case 'order':initOrder(a);break;
+    }
+}
+
+/* --- MATCHING --- */
+function initMatching(act){
+    const area=document.getElementById('activity-area'),data=act.data;
+    const sr=shuffle(data.pairs);
+    let selL=null,matched=0,mistakes=0;const total=data.pairs.length;
+    area.innerHTML=`<div class="hint"><i class="fa-solid fa-hand-pointer"></i> Toca una fracción de la izquierda y luego su equivalente de la derecha</div><div class="match-container"><div class="match-col" id="match-left">${data.pairs.map(p=>`<div class="match-item" data-pair="${p.id}" data-side="left">${fracPieHTML(p.left,data.leftColor)}<span class="frac-text">${p.left.num}/${p.left.den}</span></div>`).join('')}</div><div class="match-col" id="match-right">${sr.map(p=>`<div class="match-item" data-pair="${p.id}" data-side="right">${fracPieHTML(p.right,data.rightColor)}<span class="frac-text">${p.right.num}/${p.right.den}</span></div>`).join('')}</div></div>`;
+    area.addEventListener('click',function h(e){
+        const li=e.target.closest('.match-item[data-side="left"]'),ri=e.target.closest('.match-item[data-side="right"]');
+        if(li&&!li.classList.contains('correct')){playSound('click');area.querySelectorAll('.match-item.selected').forEach(el=>el.classList.remove('selected'));li.classList.add('selected');selL=li}
+        if(ri&&!ri.classList.contains('correct')&&selL){
+            if(selL.dataset.pair===ri.dataset.pair){playSound('correct');selL.classList.remove('selected');selL.classList.add('correct');ri.classList.add('correct');matched++;updateProgress(matched,total);const r=ri.getBoundingClientRect();miniConfetti(r.left+r.width/2,r.top+r.height/2);selL=null;if(matched===total){const s=mistakes===0?3:mistakes<=2?2:1;setTimeout(()=>completeActivity(s),600)}}
+            else{playSound('wrong');mistakes++;selL.classList.add('wrong');ri.classList.add('wrong');const sl=selL;setTimeout(()=>{sl.classList.remove('wrong','selected');ri.classList.remove('wrong');selL=null},500)}
+        }
+    });
+}
+
+/* --- QUIZ --- */
+function initQuiz(act){
+    const area=document.getElementById('activity-area'),qs=act.data.questions;
+    let cq=0,correct=0;const total=qs.length;
+    function showQ(){
+        const q=qs[cq];let vh='';
+        if(q.visual){
+            if(q.visual.type==='bar'){const p=(q.visual.value/q.visual.max)*100;vh=`<div style="max-width:350px;margin:0 auto"><div class="visual-bar"><div class="visual-bar-fill" style="width:${p}%;background:${q.visual.color}">${q.visual.label}</div></div></div>`}
+            else if(q.visual.type==='bars'){vh=`<div style="max-width:350px;margin:0 auto;display:flex;gap:8px;align-items:flex-end;height:80px">`;q.visual.values.forEach(v=>{const h=(v.v/q.visual.max)*70;vh+=`<div style="flex:1;height:${h}px;background:${v.c};border-radius:6px 6px 0 0"></div>`});vh+=`</div><div style="display:flex;gap:8px;max-width:350px;margin:4px auto 0">`;q.visual.values.forEach(v=>{vh+=`<div style="flex:1;text-align:center;font-size:.7rem;font-weight:700;color:var(--muted)">${v.v}</div>`});vh+=`</div>`}
+            else if(q.visual.type==='numberline'){const vs=q.visual.values,mn=vs[0],mx=vs[vs.length-1];vh=`<div style="max-width:350px;margin:0 auto;position:relative;padding-top:28px"><div class="number-line">`;vs.forEach((v,i)=>{const p=((v-mn)/(mx-mn))*100;const cs=['var(--muted)','var(--l1)','var(--success)','var(--muted)'];vh+=`<div class="number-line-dot" style="left:${p}%;background:${cs[i]||'var(--accent)'}"></div><div class="number-line-mark" style="left:${p}%">${v}</div>`});vh+=`</div></div>`}
+        }
+        area.innerHTML=`<div class="pop-in">${vh?`<div class="quiz-visual">${vh}</div>`:''}<div class="quiz-question">${cq+1}. ${q.q}</div><div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" data-idx="${i}">${o}</button>`).join('')}</div></div>`;
+        area.querySelectorAll('.quiz-opt').forEach(btn=>{btn.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);area.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));if(idx===q.answer){playSound('correct');this.classList.add('correct-opt');correct++;const r=this.getBoundingClientRect();miniConfetti(r.left+r.width/2,r.top)}else{playSound('wrong');this.classList.add('wrong-opt');area.querySelectorAll('.quiz-opt')[q.answer].classList.add('show-correct')}setTimeout(()=>{cq++;updateProgress(cq,total);if(cq<total)showQ();else{const s=correct===total?3:correct>=total-1?2:1;completeActivity(s)}},900)})});
+    }
+    showQ();
+}
+
+/* --- EXPLORE (Sistema Solar) --- */
+function initExplore(act){
+    const area=document.getElementById('activity-area'),data=act.data;
+    let explored=new Set(),phase='explore',cq=0,correct=0;const totalQ=data.questions.length;
+    function renderEx(){
+        area.innerHTML=`<div class="hint"><i class="fa-solid fa-hand-pointer"></i> Toca cada planeta para conocerlo. Revisa los 8 antes del reto.</div><div class="planets-row" id="planets-row"><div class="planet" style="width:50px"><div class="planet-sphere" style="width:36px;height:36px;background:radial-gradient(circle at 35% 35%,#FFF4A0,#FFB800);box-shadow:0 0 16px rgba(255,184,0,.5)"></div><span class="planet-label">Sol</span></div>${data.planets.map((p,i)=>`<div class="planet" data-idx="${i}" style="width:${Math.max(50,p.size+20)}px"><div class="planet-sphere" style="width:${p.size}px;height:${p.size}px;background:radial-gradient(circle at 35% 35%,${lighten(p.color)},${p.color})"></div><span class="planet-label">${p.name}</span></div>`).join('')}</div><div class="planet-info" id="planet-info"><p style="text-align:center;color:var(--muted)"><i class="fa-solid fa-arrow-up"></i> Toca un planeta para ver su información</p></div><div style="text-align:center;margin-top:16px"><span style="font-weight:700;color:var(--muted);font-size:.9rem" id="explore-count">${explored.size}/8 planetas revisados</span></div>${explored.size===8?'<div style="text-align:center;margin-top:12px"><button class="btn btn-primary" id="start-quiz-btn" style="font-size:1.1rem;padding:14px 32px"><i class="fa-solid fa-play"></i> Comenzar reto</button></div>':''}`;
+        area.querySelectorAll('.planet[data-idx]').forEach(el=>{el.addEventListener('click',function(){const idx=parseInt(this.dataset.idx),p=data.planets[idx];explored.add(idx);playSound('click');area.querySelectorAll('.planet').forEach(pl=>pl.classList.remove('active'));this.classList.add('active');document.getElementById('planet-info').innerHTML=`<h3 style="color:${p.color}">${p.name}</h3><p>${p.info}</p>`;document.getElementById('explore-count').textContent=`${explored.size}/8 planetas revisados`;if(explored.size===8)renderEx()})});
+        const qb=document.getElementById('start-quiz-btn');if(qb)qb.addEventListener('click',()=>{phase='quiz';showQuizQ()});
+    }
+    function showQuizQ(){
+        const q=data.questions[cq];
+        area.innerHTML=`<div class="pop-in"><div class="quiz-question">${cq+1}. ${q.q}</div><div class="quiz-options">${q.opts.map((o,i)=>`<button class="quiz-opt" data-idx="${i}">${o}</button>`).join('')}</div></div>`;
+        area.querySelectorAll('.quiz-opt').forEach(btn=>{btn.addEventListener('click',function(){const idx=parseInt(this.dataset.idx);area.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));if(idx===q.answer){playSound('correct');this.classList.add('correct-opt');correct++;const r=this.getBoundingClientRect();miniConfetti(r.left+r.width/2,r.top)}else{playSound('wrong');this.classList.add('wrong-opt');area.querySelectorAll('.quiz-opt')[q.answer].classList.add('show-correct')}setTimeout(()=>{cq++;updateProgress((cq/totalQ)*100,100);if(cq<totalQ)showQuizQ();else{const s=correct===totalQ?3:correct>=totalQ-1?2:1;completeActivity(s)}},900)})});
+    }
+    renderEx();updateProgress(0,100);
+}
+
+/* ===== LECTURA DE COMPRENSIÓN ===== */
+function initReading(act){
+    const area=document.getElementById('activity-area'),data=act.data;
+    let phase='read'; // read → quiz
+    let cq=0, correct=0;
+    const total=data.questions.length;
+
+    function renderReadPhase(){
+        area.innerHTML=`<div class="reading-container">
+            <div class="reading-book">
+                <div class="reading-book-header">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>${data.title}</span>
                 </div>
-
-                <!-- Nivel 2 -->
-                <div class="card" style="opacity: 0.6; filter: grayscale(0.8);">
-                    <div>
-                        <span class="card-tag locked">Requiere Nivel 1</span>
-                        <h2>Nivel 2: Criptografía Lógica</h2>
-                        <p>Resuelve rompecabezas visuales y acertijos matemáticos para restaurar el sistema central.</p>
-                    </div>
-                    <button class="btn" disabled>Bloqueado 🔒</button>
+                <div class="reading-book-body">
+                    ${data.text}
                 </div>
-
-                <!-- Nivel 3 -->
-                <div class="card" style="opacity: 0.6; filter: grayscale(0.8);">
-                    <div>
-                        <span class="card-tag locked">Alto Rango Requerido</span>
-                        <h2>Nivel 3: El Viaje del Tiempo</h2>
-                        <p>Explora escenarios inmersivos interactivos de la Revolución Mexicana.</p>
-                    </div>
-                    <button class="btn" disabled>Bloqueado 🔒</button>
-                </div>
-
             </div>
-        </div>
-
-        <!-- VISTA DE LA MISIÓN 1 -->
-        <div id="activity-1" class="view-section">
-            <div class="back-link" onclick="switchView('dashboard-view')">◄ Abortar Misión</div>
-            
-            <div id="results-summary" class="results-box">
-                <h4 id="result-title">NIVEL COMPLETADO</h4>
-                <p id="score-text">Puntaje: 0 / 20 XP</p>
-                <div class="xp-bar">
-                    <div class="xp-fill" id="xp-fill"></div>
-                </div>
+            <div class="reading-btn-row">
+                <button class="btn btn-teal" id="reading-start-btn" style="font-size:1.05rem;padding:14px 28px">
+                    <i class="fa-solid fa-check-double"></i> Ya leí todo, empezar preguntas
+                </button>
             </div>
+        </div>`;
 
-            <h2 class="quiz-title">/// ARCHIVOS DE LA MISIÓN ///</h2>
+        document.getElementById('reading-start-btn').addEventListener('click',()=>{
+            playSound('click');
+            phase='quiz';
+            showReadingQ();
+        });
+    }
 
-            <!-- LECTURA 1 CON IMAGEN -->
-            <div class="reading-box">
-                <h3><span style="font-size: 1.5em;">🏛️</span> Archivo 1: El Secreto de los Chultunes Mayas</h3>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Chichen_Itza_3.jpg" alt="Ruinas Mayas" class="feature-image">
-                <p>La civilización maya floreció en la península de Yucatán y otras regiones de Centroamérica durante el período Clásico (entre los siglos III y IX d.C.). Sin embargo, la península de Yucatán tiene una característica peculiar: casi no hay ríos superficiales debido a que el suelo es de piedra caliza, la cual absorbe el agua como una esponja y la lleva al subsuelo, creando los llamados cenotes. Durante la época de sequía, que duraba varios meses, conseguir agua dulce para la agricultura y el consumo humano era un gran desafío.</p>
-                <p>Para resolver este gran problema, los mayas de ciudades como Uxmal y Tikal desarrollaron un ingenioso sistema de ingeniería: <strong>los chultunes</strong>. Un chultún es una cisterna subterránea excavada directamente en la roca caliza dura. Tenían una ingeniosa forma de botella, con un cuello muy estrecho en la superficie (que se podía tapar con una gran losa de piedra para evitar que entrara suciedad, hojas secas o animales) y una cámara sumamente amplia en el fondo.</p>
-                <p>El interior se recubría por completo con un yeso especial hecho de cal, llamado <em>estuco</em>, que servía para impermeabilizar las paredes y evitar que el agua se filtrara. Alrededor de la entrada, construían plataformas inclinadas de piedra pulida que funcionaban como embudos gigantes para atrapar la lluvia. Algunos chultunes podían almacenar hasta 30,000 litros de agua, salvando a ciudades enteras de la sequía.</p>
+    function showReadingQ(){
+        const q=data.questions[cq];
+        const badgeClass = q.type==='literal'?'badge-literal':q.type==='inferencial'?'badge-inferencial':'badge-vocab';
+
+        area.innerHTML=`<div class="pop-in">
+            <div style="text-align:center">
+                <span class="reading-type-badge ${badgeClass}">${q.label}</span>
             </div>
-
-            <!-- PREGUNTAS LECTURA 1 -->
-            <div id="quiz-container-1">
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">1. ¿En qué período floreció la civilización maya según el archivo?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q1" value="A"> A) Período Preclásico</label></li>
-                        <li class="option-item"><label><input type="radio" name="q1" value="B"> B) Período Clásico (siglos III al IX d.C.)</label></li>
-                        <li class="option-item"><label><input type="radio" name="q1" value="C"> C) Período Posclásico</label></li>
-                        <li class="option-item"><label><input type="radio" name="q1" value="D"> D) En la actualidad</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="C">
-                    <p class="question-text">2. ¿Por qué el terreno de Yucatán carece de ríos en la superficie?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q2" value="A"> A) Nunca llueve en la región.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q2" value="B"> B) Los mayas los secaron a propósito.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q2" value="C"> C) El suelo de piedra caliza absorbe el agua hacia el subsuelo.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q2" value="D"> D) Se evaporan instantáneamente por el calor.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">3. ¿Qué es exactamente un chultún?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q3" value="A"> A) Un observatorio astronómico.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q3" value="B"> B) Una cisterna subterránea excavada en roca para agua.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q3" value="C"> C) Un tipo de pirámide de sacrificios.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q3" value="D"> D) Una red de pesca gigante.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="C">
-                    <p class="question-text">4. ¿Qué forma tenían estos depósitos por dentro?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q4" value="A"> A) De caja cuadrada perfecta.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q4" value="B"> B) De tubo largo y delgado.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q4" value="C"> C) De botella: cuello estrecho y fondo amplio.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q4" value="D"> D) Forma de estrella de mar.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">5. ¿Qué material clave impedía que el agua se fugara por la piedra?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q5" value="A"> A) Barro y miel.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q5" value="B"> B) Un yeso de cal llamado estuco.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q5" value="C"> C) Pieles de animales selladas.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q5" value="D"> D) Resina de árbol ardiente.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="A">
-                    <p class="question-text">6. ¿Cuál era la función de la losa de piedra en la entrada?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q6" value="A"> A) Bloquear la entrada de basura y animales.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q6" value="B"> B) Atrapar el calor del sol.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q6" value="C"> C) Servir como mesa de sacrificios.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q6" value="D"> D) Esconder el agua de las tribus enemigas.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="D">
-                    <p class="question-text">7. ¿Cómo canalizaban el agua hacia el agujero?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q7" value="A"> A) Con cubetas desde los lagos.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q7" value="B"> B) Soplando a través de tubos de bambú.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q7" value="C"> C) Construyendo acueductos gigantes desde las montañas.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q7" value="D"> D) Con plataformas inclinadas de piedra como embudos.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="C">
-                    <p class="question-text">8. ¿Cuántos litros de agua lograban almacenar los chultunes más grandes?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q8" value="A"> A) 500 litros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q8" value="B"> B) 10,000 litros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q8" value="C"> C) Hasta 30,000 litros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q8" value="D"> D) Más de un millón de litros.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="A">
-                    <p class="question-text">9. ¿Qué ciudades se mencionan como expertas en esta ingeniería?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q9" value="A"> A) Uxmal y Tikal.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q9" value="B"> B) Tenochtitlan y Tula.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q9" value="C"> C) Chichén Itzá y Tulum.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q9" value="D"> D) Palenque y Copán.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="D">
-                    <p class="question-text">10. ¿Cuál es el núcleo central de este texto?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q10" value="A"> A) Las guerras mayas por el agua.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q10" value="B"> B) Cómo construir una casa maya.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q10" value="C"> C) El misterio de los cenotes sin fondo.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q10" value="D"> D) El ingenio maya para almacenar agua en tiempos de sequía.</label></li>
-                    </ul>
-                </div>
+            <div class="reading-question">${cq+1}. ${q.q}</div>
+            <div class="quiz-options">
+                ${q.opts.map((o,i)=>`<button class="quiz-opt" data-idx="${i}">${o}</button>`).join('')}
             </div>
-
-            <!-- LECTURA 2 CON IMAGEN -->
-            <div class="reading-box" style="border-left-color: #00ffcc; margin-top: 60px;">
-                <h3><span style="font-size: 1.5em;">🦋</span> Archivo 2: La Maratón de la Generación Matusalén</h3>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Monarch_In_May.jpg" alt="Mariposa Monarca" class="feature-image">
-                <p>Cada año, entre agosto y octubre, millones de mariposas monarca emprenden un largo viaje de más de 4,000 kilómetros. Se desplazan desde el sur de Canadá y el norte de Estados Unidos hasta los bosques de Michoacán y el Estado de México. Escapan del gélido invierno del norte, ya que las bajas temperaturas y la falta de flores causarían su muerte.</p>
-                <p>Los densos bosques de un árbol llamado <strong>oyamel</strong> en México les otorgan el refugio perfecto: la temperatura es fresca para que entren en hibernación (ahorrando energía vital), pero no tan fría como para congelarlas. Además, la neblina mantiene sus cuerpos hidratados.</p>
-                <p>Lo más asombroso es la biología de este viaje. Una mariposa monarca común vive solamente de 4 a 5 semanas. Sin embargo, la generación que nace al final del verano detiene su envejecimiento. Los biólogos la llaman la <strong>"Generación Matusalén"</strong>. Estas guerreras aladas logran vivir hasta 8 meses. Ellas hacen todo el viaje de ida hacia el sur, hibernan durante el invierno, y en marzo emprenden el regreso. En el camino de vuelta se reproducen y mueren, dejando que sus hijos finalicen el trayecto total de regreso a Canadá guiándose con una brújula solar y sensores magnéticos en sus antenas.</p>
+            <div style="text-align:center;margin-top:16px">
+                <button class="btn btn-back" id="re-read-btn" style="font-size:.85rem;padding:8px 16px">
+                    <i class="fa-solid fa-book-open"></i> Volver al texto
+                </button>
             </div>
+        </div>`;
 
-            <!-- PREGUNTAS LECTURA 2 -->
-            <div id="quiz-container-2">
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">11. ¿Cuál es la distancia aproximada de la misión de las monarcas?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q11" value="A"> A) 1,000 kilómetros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q11" value="B"> B) Más de 4,000 kilómetros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q11" value="C"> C) 500 kilómetros.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q11" value="D"> D) 10,000 kilómetros.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="D">
-                    <p class="question-text">12. ¿Desde dónde inicia su ruta de escape hacia el sur?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q12" value="A"> A) Desde Sudamérica.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q12" value="B"> B) Desde el Polo Norte.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q12" value="C"> C) Desde las selvas de Brasil.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q12" value="D"> D) Desde el sur de Canadá y norte de Estados Unidos.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="A">
-                    <p class="question-text">13. ¿Cuál es su destino final en México?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q13" value="A"> A) Michoacán y Estado de México.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q13" value="B"> B) Cancún y Tulum.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q13" value="C"> C) El desierto de Sonora.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q13" value="D"> D) Las playas de Oaxaca.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="C">
-                    <p class="question-text">14. ¿Qué tipo de árbol les brinda protección en invierno?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q14" value="A"> A) El roble oscuro.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q14" value="B"> B) El cactus gigante.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q14" value="C"> C) El árbol de oyamel.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q14" value="D"> D) La palmera cocotera.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">15. ¿Qué beneficio crucial obtienen del bosque de oyameles?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q15" value="A"> A) Un escondite contra pájaros gigantes.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q15" value="B"> B) Temperatura ideal para hibernar y humedad contra la deshidratación.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q15" value="C"> C) Mucho néctar de flores amarillas.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q15" value="D"> D) Sol intenso para calentar sus alas rápido.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="A">
-                    <p class="question-text">16. En condiciones normales, ¿cuál es la barra de vida (tiempo de vida) de una monarca?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q16" value="A"> A) 4 a 5 semanas.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q16" value="B"> B) 1 semana.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q16" value="C"> C) 2 años.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q16" value="D"> D) 8 meses fijos para todas.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="C">
-                    <p class="question-text">17. ¿Qué nombre clave le dieron los biólogos a la generación viajera?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q17" value="A"> A) Escuadrón Monarca.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q17" value="B"> B) Generación Titanio.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q17" value="C"> C) Generación Matusalén.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q17" value="D"> D) Mutantes de Invierno.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="D">
-                    <p class="question-text">18. ¿Cuál es el máximo de vida (XP temporal) que alcanza esta generación especial?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q18" value="A"> A) 2 meses.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q18" value="B"> B) 4 meses.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q18" value="C"> C) 6 meses.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q18" value="D"> D) Hasta 8 meses.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="A">
-                    <p class="question-text">19. Si las Matusalén mueren en el camino de regreso, ¿quién termina la misión hacia Canadá?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q19" value="A"> A) Sus hijos y nietos recién nacidos.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q19" value="B"> B) Aves migratorias que llevan sus huevos.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q19" value="C"> C) Abejas que viajan en la misma ruta.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q19" value="D"> D) Las mismas Matusalén reviven.</label></li>
-                    </ul>
-                </div>
-                <div class="question-block" data-correct="B">
-                    <p class="question-text">20. ¿Qué tecnología biológica utilizan para navegar sin perderse?</p>
-                    <ul class="options-list">
-                        <li class="option-item"><label><input type="radio" name="q20" value="A"> A) Sonar acústico como los murciélagos.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q20" value="B"> B) Brújula solar y sensores magnéticos en las antenas.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q20" value="C"> C) Memoria fotográfica del terreno.</label></li>
-                        <li class="option-item"><label><input type="radio" name="q20" value="D"> D) Siguen el humo de las chimeneas.</label></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Botón de Evaluación (Bloqueado por defecto) -->
-            <button id="submit-btn" class="btn" style="width: 100%; font-size: 1.5rem; padding: 20px; margin-top: 20px;" onclick="evaluateQuiz()" disabled>
-                🔒 SISTEMA BLOQUEADO (FALTAN 20 RESPUESTAS)
-            </button>
-            
-        </div>
-        
-        <!-- Tracker flotante en la parte inferior para que sepa cuántas le faltan mientras lee -->
-        <div id="progress-tracker" class="progress-tracker">
-            <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary-neon);">PROGRESO DE LA MISIÓN: <span id="answered-count">0</span>/20 DATOS RECOPILADOS</span>
-        </div>
-
-    </div>
-
-    <script>
-        // Lógica de Validación Constante
-        document.addEventListener('DOMContentLoaded', () => {
-            const radios = document.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => {
-                radio.addEventListener('change', checkCompletion);
-            });
-            checkCompletion(); // Estado inicial al cargar
+        // Botón para volver a leer
+        document.getElementById('re-read-btn').addEventListener('click',()=>{
+            phase='read';
+            renderReadPhase();
         });
 
-        function checkCompletion() {
-            const totalQuestions = 20;
-            let answered = 0;
-            
-            // Contar cuántas preguntas han sido respondidas
-            for (let i = 1; i <= totalQuestions; i++) {
-                if (document.querySelector(`input[name="q${i}"]:checked`)) {
-                    answered++;
-                    // Opcional: Marcar visualmente el bloque de la pregunta como "listo"
-                    document.querySelector(`input[name="q${i}"]:checked`).closest('.question-block').classList.add('answered');
+        area.querySelectorAll('.quiz-opt').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                const idx=parseInt(this.dataset.idx);
+                area.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));
+                if(idx===q.answer){
+                    playSound('correct');
+                    this.classList.add('correct-opt');
+                    correct++;
+                    const r=this.getBoundingClientRect();
+                    miniConfetti(r.left+r.width/2,r.top);
+                } else {
+                    playSound('wrong');
+                    this.classList.add('wrong-opt');
+                    area.querySelectorAll('.quiz-opt')[q.answer].classList.add('show-correct');
                 }
-            }
-            
-            // Actualizar el botón de envío
-            const btn = document.getElementById('submit-btn');
-            const trackerText = document.getElementById('answered-count');
-            
-            trackerText.textContent = answered;
-
-            if(answered === totalQuestions) {
-                btn.disabled = false;
-                btn.innerHTML = "▶ VALIDAR DATOS Y TERMINAR NIVEL ◀";
-                btn.style.boxShadow = "0 0 15px var(--primary-neon)";
-                btn.style.borderColor = "var(--primary-neon)";
-                btn.style.color = "var(--primary-neon)";
-                document.getElementById('progress-tracker').classList.remove('active'); // Ocultar tracker flotante si ya terminó
-            } else {
-                btn.disabled = true;
-                btn.innerHTML = `🔒 SISTEMA BLOQUEADO (FALTAN ${totalQuestions - answered} RESPUESTAS)`;
-            }
-        }
-
-        // Lógica de Vistas
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(viewId).classList.add('active');
-            window.scrollTo(0, 0);
-            
-            // Mostrar tracker flotante si entra a la actividad
-            if(viewId === 'activity-1' && document.getElementById('submit-btn').disabled) {
-                document.getElementById('progress-tracker').classList.add('active');
-            } else {
-                document.getElementById('progress-tracker').classList.remove('active');
-            }
-        }
-
-        // Lógica de Calificación
-        function evaluateQuiz() {
-            let score = 0;
-            const totalQuestions = 20;
-            const questionBlocks = document.querySelectorAll('.question-block');
-
-            // Ocultar botón de validar para que no lo presione de nuevo
-            document.getElementById('submit-btn').style.display = 'none';
-
-            questionBlocks.forEach((block, index) => {
-                const correctAnswer = block.getAttribute('data-correct');
-                const questionNum = index + 1;
-                const selectedRadio = block.querySelector(`input[name="q${questionNum}"]:checked`);
-                
-                block.querySelectorAll('.option-item label').forEach(label => {
-                    label.classList.remove('correct-answer', 'wrong-answer');
-                });
-
-                if (selectedRadio) {
-                    const userAnswer = selectedRadio.value;
-                    if (userAnswer === correctAnswer) {
-                        score++;
-                        selectedRadio.parentElement.classList.add('correct-answer');
-                    } else {
-                        selectedRadio.parentElement.classList.add('wrong-answer');
-                        block.querySelectorAll('.option-item label').forEach(label => {
-                            if (label.querySelector('input').value === correctAnswer) {
-                                label.classList.add('correct-answer');
-                            }
-                        });
+                setTimeout(()=>{
+                    cq++;
+                    updateProgress(cq, total);
+                    if(cq<total) showReadingQ();
+                    else {
+                        const s = correct===total ? 3 : correct>=total-1 ? 2 : 1;
+                        completeActivity(s);
                     }
-                }
+                }, 1000);
             });
+        });
+    }
 
-            // Mostrar Resultados
-            const resultsBox = document.getElementById('results-summary');
-            const scoreText = document.getElementById('score-text');
-            const resultTitle = document.getElementById('result-title');
-            const xpFill = document.getElementById('xp-fill');
-            
-            resultsBox.style.display = 'block';
-            
-            let message = "";
-            let percentage = (score / totalQuestions) * 100;
-            
-            if(score === totalQuestions) {
-                resultTitle.innerHTML = "🏆 RANGO S: LEYENDA DESBLOQUEADA";
-                resultTitle.style.color = "#ffdf00";
-                message = "<br><span style='font-size:1rem; color:#8b949e;'>¡Precisión del 100%! Memoria fotográfica confirmada.</span>";
-            } else if (score >= 15) {
-                resultTitle.innerHTML = "⭐ RANGO A: OPERADOR ÉLITE";
-                resultTitle.style.color = "#39ff14";
-                message = "<br><span style='font-size:1rem; color:#8b949e;'>Excelente retención de datos en la misión.</span>";
-            } else if (score >= 10) {
-                resultTitle.innerHTML = "⚠️ RANGO B: MISIÓN COMPLETADA CON DAÑOS";
-                resultTitle.style.color = "#ffcc00";
-                message = "<br><span style='font-size:1rem; color:#8b949e;'>Pasaste la prueba, pero perdiste datos importantes. Vuelve a escanear los archivos.</span>";
-            } else {
-                resultTitle.innerHTML = "☠️ RANGO C: MISIÓN FALLIDA";
-                resultTitle.style.color = "#ff0033";
-                message = "<br><span style='font-size:1rem; color:#8b949e;'>Demasiada pérdida de información. Requiere re-entrenamiento inmediato.</span>";
-            }
+    renderReadPhase();
+}
 
-            scoreText.innerHTML = "EXPERIENCIA OBTENIDA: <strong>" + score + "</strong> / <strong>" + totalQuestions + "</strong> XP" + message;
-            
-            // Animar Barra de XP
-            setTimeout(() => {
-                xpFill.style.width = percentage + "%";
-                if(percentage < 50) xpFill.style.background = "linear-gradient(90deg, #ff0033, #ff6600)";
-                else if(percentage < 80) xpFill.style.background = "linear-gradient(90deg, #ffcc00, #ffea00)";
-                else xpFill.style.background = "linear-gradient(90deg, #00ffcc, #39ff14)";
-            }, 300);
+/* --- MEMORY --- */
+function initMemory(act){
+    const area=document.getElementById('activity-area'),pairs=act.data.pairs;
+    let cards=[];pairs.forEach((p,i)=>{cards.push({text:p.a,pairId:i,type:p.type});cards.push({text:p.b,pairId:i,type:p.type})});
+    cards=shuffle(cards);let flipped=[],matched=0,moves=0,locked=false;const total=pairs.length;
+    function renderC(){
+        area.innerHTML=`<div class="hint"><i class="fa-solid fa-hand-pointer"></i> Encuentra los pares de sinónimos y antónimos. Toca dos tarjetas para voltearlas.</div><div style="text-align:center;margin-bottom:12px;font-weight:700;color:var(--muted);font-size:.9rem">Movimientos: <span id="move-count">${moves}</span> | Pares: <span id="pair-count">${matched}</span>/${total}</div><div class="memory-grid" id="memory-grid">${cards.map((c,i)=>`<div class="memory-card" data-idx="${i}"><div class="memory-card-inner"><div class="memory-face memory-front"><i class="fa-solid fa-question"></i></div><div class="memory-face memory-back"><span>${c.text}</span><span style="font-size:.6rem;color:${c.type==='sin'?'var(--success)':'var(--error)'};position:absolute;bottom:6px">${c.type==='sin'?'Sinónimo':'Antónimo'}</span></div></div></div>`).join('')}</div>`;
+        area.querySelectorAll('.memory-card').forEach(el=>{el.addEventListener('click',function(){if(locked||this.classList.contains('flipped')||this.classList.contains('matched'))return;playSound('click');this.classList.add('flipped');flipped.push(this);if(flipped.length===2){moves++;document.getElementById('move-count').textContent=moves;locked=true;const[a,b]=flipped;const ca=cards[parseInt(a.dataset.idx)],cb=cards[parseInt(b.dataset.idx)];if(ca.pairId===cb.pairId&&a!==b){playSound('correct');setTimeout(()=>{a.classList.add('matched');b.classList.add('matched');matched++;document.getElementById('pair-count').textContent=matched;updateProgress(matched,total);const r=b.getBoundingClientRect();miniConfetti(r.left+r.width/2,r.top+r.height/2);flipped=[];locked=false;if(matched===total){const s=moves<=total+2?3:moves<=total+5?2:1;setTimeout(()=>completeActivity(s),600)}},500)}else{playSound('wrong');setTimeout(()=>{a.classList.remove('flipped');b.classList.remove('flipped');flipped=[];locked=false},800)}}})});
+    }
+    renderC();
+}
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+/* --- CLASSIFY --- */
+function initClassify(act){
+    const area=document.getElementById('activity-area'),data=act.data;
+    let current=0,correct=0;const total=data.words.length;
+    function showW(){
+        const w=data.words[current],syllables=splitSyllables(w.text);
+        const rendered=syllables.map((s,i)=>i===w.stressed?`<span class="syllable-stressed">${s}</span>`:s).join('-');
+        area.innerHTML=`<div class="hint"><i class="fa-solid fa-hand-pointer"></i> La sílaba con <span style="color:var(--accent);text-decoration:underline">color y raya</span> lleva la fuerza. Toca dónde corresponde.</div><div class="classify-word"><div class="classify-word-text pop-in">${rendered}</div></div><div class="classify-bins">${data.categories.map(c=>`<div class="classify-bin bin-${c.id}" data-cat="${c.id}"><div style="font-size:1.1rem">${c.label}</div><div style="font-size:.7rem;color:var(--muted);margin-top:4px;font-weight:600">${c.desc}</div></div>`).join('')}</div>`;
+        area.querySelectorAll('.classify-bin').forEach(bin=>{bin.addEventListener('click',function(){const chosen=this.dataset.cat;area.querySelectorAll('.classify-bin').forEach(b=>b.style.pointerEvents='none');if(chosen===w.type){playSound('correct');this.classList.add('bin-correct');correct++;const r=this.getBoundingClientRect();miniConfetti(r.left+r.width/2,r.top)}else{playSound('wrong');this.classList.add('bin-wrong');area.querySelector(`.bin-${w.type}`).classList.add('bin-correct')}setTimeout(()=>{current++;updateProgress(current,total);if(current<total)showW();else{const s=correct===total?3:correct>=total-1?2:1;completeActivity(s)}},1000)})});
+    }
+    showW();
+}
+
+/* --- ORDER --- */
+function initOrder(act){
+    const area=document.getElementById('activity-area'),chains=act.data.chains;
+    let cc=0,totalCorrect=0;const totalC=chains.length;
+    function showChain(){
+        const ch=chains[cc],slots=ch.correct;let placed=[];
+        function renderCS(){
+            area.innerHTML=`<div class="hint"><i class="fa-solid fa-hand-pointer"></i> ${ch.label}: Toca los organismos en orden, desde el productor hasta el último consumidor.</div><div class="chain-slots">${slots.map((_,i)=>`<div class="chain-slot ${placed[i]?'filled':''} ${placed[i]?(placed[i]===slots[i]?'correct-slot':'wrong-slot'):''}" id="slot-${i}">${placed[i]||'...'}</div>${i<slots.length-1?'<span class="chain-arrow"><i class="fa-solid fa-arrow-right"></i></span>':''}`).join('')}</div><div class="chain-cards" id="chain-cards">${ch.options.map(o=>`<div class="chain-card ${placed.includes(o)?'used':''}" data-val="${o}">${o}</div>`).join('')}</div>`;
+            if(placed.length===slots.length){const ok=placed.every((p,i)=>p===slots[i]);if(ok){totalCorrect++;playSound('correct');area.querySelectorAll('.chain-slot').forEach(s=>{s.classList.remove('wrong-slot');s.classList.add('correct-slot')})}else playSound('wrong');setTimeout(()=>{cc++;updateProgress(cc,totalC);if(cc<totalC)showChain();else{const s=totalCorrect===totalC?3:totalCorrect>=2?2:1;completeActivity(s)}},1200);return}
+            area.querySelectorAll('.chain-card:not(.used)').forEach(c=>{c.addEventListener('click',function(){placed.push(this.dataset.val);renderCS()})});
         }
-    </script>
+        renderCS();
+    }
+    showChain();
+}
+
+/* ===================== EVENTOS ===================== */
+document.getElementById('app').addEventListener('click',function(e){
+    const el=e.target.closest('[data-action]');if(!el)return;
+    const a=el.dataset.action;playSound('click');
+    switch(a){
+        case 'openLevel':state.screen='level';state.currentLevel=parseInt(el.dataset.level);render();break;
+        case 'goMenu':state.screen='menu';render();break;
+        case 'goLevel':state.screen='level';render();break;
+        case 'openActivity':state.screen='activity';state.currentActivity=parseInt(el.dataset.act);render();break;
+        case 'nextLevel':state.currentLevel++;state.screen='level';render();break;
+    }
+});
+
+/* ===================== INICIO ===================== */
+loadProgress();
+render();
+</script>
 </body>
 </html>
